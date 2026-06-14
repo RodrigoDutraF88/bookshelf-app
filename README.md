@@ -1,29 +1,48 @@
-# Create T3 App
+# 📚 Bookshelf App(1.0)
+ 
+> A full-stack personal reading tracker to organize, monitor, and analyze your reading habits.
+ 
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)
+![tRPC](https://img.shields.io/badge/tRPC-v11-398CCB)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss)
+ 
+Bookshelf App lets you build a personal digital library, track reading progress, visualize your reading habits over time. Discover trending titles and receive **personalized book recommendations & summaries powered by AI**. Built on the **T3 Stack** with end-to-end type safety across the database, API, and UI.
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Documentation
+ 
+| Doc | Description |
+|---|---|
+| [Architecture](docs/architecture.md) | System overview, request flow, and decision log |
+| [Data Model](docs/data-model.md) | Database schema and entity relationships |
+| [Authentication](docs/authentication.md) | Auth.js + tRPC + Prisma Adapter setup |
+| [tRPC Guide](docs/trpc-guide.md) | How to work with the API layer |
+| [Environment Variables](docs/environment.md) | Full env reference and setup notes |
+| [Contributing](docs/contributing.md) | Conventions, branching, and commit style |
+ 
 
-## What's next? How do I make an app with this?
+## Features
+ 
+- **Personal Library** — add, edit, and remove books with full metadata
+- **Reading Status** — Want to Read · Currently Reading · Completed · Dropped
+- **Progress Tracking** — current page, percentage, start/finish dates
+- **Reviews & Ratings** — rate books, write notes, keep a private journal
+- **Statistics Dashboard** — pages read, streaks, activity over time, genre distribution
+- **Search & Filtering** — filter by status, genre, rating, or date;
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
-
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+ 
+## Tech Stack
+ 
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| UI | React 19, Tailwind CSS v4 |
+| API | tRPC v11, SuperJSON |
+| Database | PostgreSQL (Supabase), Prisma ORM |
+| Auth | Auth.js (NextAuth v5 Beta), Prisma Adapter |
+| Validation | Zod |
+| Data Fetching | TanStack React Query |
+| Env | @t3-oss/env-nextjs |
+ 
