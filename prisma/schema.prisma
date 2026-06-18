@@ -4,7 +4,9 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")       // pooled (port 6543)  runtime queries
+    directUrl = env("DIRECT_URL")         // direct (port 5432)  migrations
 }
 
 enum BookStatus {
