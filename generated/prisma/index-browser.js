@@ -121,14 +121,6 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.PostScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdById: 'createdById'
-};
-
 exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -152,18 +144,54 @@ exports.Prisma.SessionScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
   emailVerified: 'emailVerified',
-  image: 'image'
+  image: 'image',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.VerificationTokenScalarFieldEnum = {
-  identifier: 'identifier',
-  token: 'token',
-  expires: 'expires'
+exports.Prisma.BookScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  author: 'author',
+  coverImage: 'coverImage',
+  description: 'description',
+  genres: 'genres',
+  publishedYear: 'publishedYear',
+  isbn: 'isbn',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReadingProgressScalarFieldEnum = {
+  id: 'id',
+  bookId: 'bookId',
+  currentPage: 'currentPage',
+  totalPages: 'totalPages',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  bookId: 'bookId',
+  rating: 'rating',
+  body: 'body',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -180,14 +208,21 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.BookStatus = exports.$Enums.BookStatus = {
+  WANT_TO_READ: 'WANT_TO_READ',
+  CURRENTLY_READING: 'CURRENTLY_READING',
+  COMPLETED: 'COMPLETED',
+  DROPPED: 'DROPPED'
+};
 
 exports.Prisma.ModelName = {
-  Post: 'Post',
   Account: 'Account',
   Session: 'Session',
+  VerificationToken: 'VerificationToken',
   User: 'User',
-  VerificationToken: 'VerificationToken'
+  Book: 'Book',
+  ReadingProgress: 'ReadingProgress',
+  Review: 'Review'
 };
 
 /**
