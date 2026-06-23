@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BookStatus } from "@prisma/client";
+import { BookStatus } from "../../../../generated/prisma";
 
 //This code is a validation layer. It defines what data is allowed to enter your API before it reaches your database.
 //zod is a TypeScript schema validation library.

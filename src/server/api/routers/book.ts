@@ -7,6 +7,8 @@ import {
   getAllBooksSchema,
 } from "./book.schema";
 
+//This file creates your Book API router. It defines all operations that frontend can call
+
 export const bookRouter = createTRPCRouter({
   create: protectedProcedure
     .input(createBookSchema)
@@ -25,8 +27,8 @@ export const bookRouter = createTRPCRouter({
       return ctx.db.book.findMany({
         where: {
           userId: ctx.session.user.id,
-          ...(input?.status && { status: input.status }),
-          ...(input?.search && {
+          ...(input?.status !== undefined && { status: input.status }), //se existe input le o resto e atribui, se nao ignora
+          ...(input?.search !== undefined && {
             OR: [
               { title: { contains: input.search, mode: "insensitive" } },
               { author: { contains: input.search, mode: "insensitive" } },
