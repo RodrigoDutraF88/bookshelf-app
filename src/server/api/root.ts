@@ -1,11 +1,13 @@
 import { createCallerFactory, createTRPCRouter } from "../api/trpc";
-
+import { bookRouter } from "./routers/book";
 /**
  * This is the primary router for your server.
  *
  * All routers added in /api/routers should be manually added here.
  */
-export const appRouter = createTRPCRouter({});
+export const appRouter = createTRPCRouter({
+    book: bookRouter,//The namespace book here is what makes trpc.book.getAll work on the client
+});
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
