@@ -1,6 +1,7 @@
 import { createCallerFactory, createTRPCRouter } from "../api/trpc";
 import { bookRouter } from "./routers/book";
 import { progressRouter } from "./routers/progress";
+import { reviewRouter } from "./routers/review";
 /**
  * This is the primary router for your server.
  *
@@ -9,6 +10,7 @@ import { progressRouter } from "./routers/progress";
 export const appRouter = createTRPCRouter({
     book: bookRouter,//The namespace book here is what makes trpc.book.getAll work on the client
     progress: progressRouter,
+    review: reviewRouter,
 });
 
 // export type definition of API
