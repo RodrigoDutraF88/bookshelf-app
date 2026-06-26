@@ -1,6 +1,96 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
 @import "tailwindcss";
 
+
 @theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+ 
+  --color-bg:            #0F0F0F;   
+  --color-surface:       #181818;   
+  --color-surface-raised:#222222;   
+  --color-border:        #2A2A2A;   
+  --color-border-hover:  #3D3D3D;
+
+  --color-accent:        #C8A97E; 
+  --color-accent-dim:    #9E7D52;  
+  --color-accent-glass:  rgba(200, 169, 126, 0.10);
+  --color-accent-glow:   rgba(200, 169, 126, 0.15); 
+
+  --color-text-primary:  #F2EDE4;   
+  --color-text-secondary:#B0A99F;  
+  --color-text-muted:    #7A7672;  
+
+  --color-danger:        #C0614A;
+  --color-success:       #5C9E6E;
+
+ 
+  --color-spine-want:    #4A7FA5;  
+  --color-spine-reading: #C8A97E;   
+  --color-spine-done:    #5C9E6E;  
+  --color-spine-dropped: #6B6B6B; 
+
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", "Fira Code", monospace;
+
+ 
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-card-hover: 0 2px 8px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--color-border-hover);
+  --shadow-modal: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px var(--color-border);
+
+  
+  --transition-fast:   150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base:   200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:   300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-border-hover); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+.font-display  { font-family: var(--font-display); }
+.font-mono     { font-family: var(--font-mono); }
+
+.text-accent   { color: var(--color-accent); }
+.text-muted    { color: var(--color-text-muted); }
+.text-secondary{ color: var(--color-text-secondary); }
+
+.surface       { background: var(--color-surface); }
+.surface-raised{ background: var(--color-surface-raised); }
+.border-subtle { border-color: var(--color-border); }
