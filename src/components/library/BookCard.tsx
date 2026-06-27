@@ -1,13 +1,14 @@
-
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
+import type { Book, ReadingProgress, Review } from "../../../generated/prisma"; 
 import { StatusBadge, STATUS_CONFIG } from "../../components/ui/StatusBadge";
 import { ProgressRing } from "../../components/ui/ProgressRing";
 import { StarRating } from "../../components/ui/StarRating";
+import { ProgressBar } from "../../components/progress/ProgressBar";
+import { ProgressModal } from "../../components/progress/ProgressModal";
 import { api } from "~/trpc/react";
 
 type BookWithRelations = Book & {
@@ -23,12 +24,12 @@ type Props = {
 export function BookCard({ book, onDeleted }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
 
   const utils = api.useUtils();
 
   const deleteBook = api.book.delete.useMutation({
     onSuccess: () => {
-   
       void utils.book.getAll.invalidate();
       onDeleted?.();
     },
@@ -38,190 +39,230 @@ export function BookCard({ book, onDeleted }: Props) {
     book.readingProgress?.currentPage && book.readingProgress?.totalPages
       ? Math.round(
           (book.readingProgress.currentPage / book.readingProgress.totalPages) *
-            100
+            100,
         )
       : null;
 
   const spineColor = STATUS_CONFIG[book.status].spineVar;
 
   function handleDelete(e: React.MouseEvent) {
-    e.preventDefault(); // Don't navigate to book detail
+    e.preventDefault();
     e.stopPropagation();
-
     if (!confirmDelete) {
       setConfirmDelete(true);
       setTimeout(() => setConfirmDelete(false), 3000);
       return;
     }
-
     deleteBook.mutate({ id: book.id });
   }
 
   return (
-    <Link
-      href={`/library/${book.id}`}
-      className="group block"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setConfirmDelete(false);
-      }}
-    >
-      <article
-        className="relative flex flex-col h-full rounded-lg overflow-hidden"
-        style={{
-          backgroundColor: "var(--color-surface)",
-    
-          borderLeft: `3px solid ${spineColor}`,
-          boxShadow: isHovered
-            ? "var(--shadow-card-hover)"
-            : "var(--shadow-card)",
-          transition: "box-shadow var(--transition-base), transform var(--transition-base)",
-          transform: isHovered ? "translateY(-2px)" : "translateY(0)",
+    <>
+      <Link
+        href={`/library/${book.id}`}
+        className="group block"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setConfirmDelete(false);
         }}
       >
-    
-        <div className="relative aspect-[2/3] overflow-hidden bg-[var(--color-surface-raised)] flex-shrink-0">
-          {book.coverImage ? (
-            <Image
-              src={book.coverImage}
-              alt={`Cover of ${book.title}`}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover"
-              style={{
-                transition: "transform var(--transition-slow)",
-                transform: isHovered ? "scale(1.03)" : "scale(1)",
-              }}
-            />
-          ) : (
-
-            <div
-              className="w-full h-full flex items-center justify-center"
-              style={{
-                background: `linear-gradient(135deg, color-mix(in srgb, ${spineColor} 20%, var(--color-surface-raised)) 0%, var(--color-surface-raised) 100%)`,
-              }}
-              aria-hidden="true"
-            >
-              <span
-                className="text-5xl font-bold select-none"
+        <article
+          className="relative flex flex-col h-full rounded-lg overflow-hidden"
+          style={{
+            backgroundColor: "var(--color-surface)",
+            borderLeft: `3px solid ${spineColor}`,
+            boxShadow: isHovered
+              ? "var(--shadow-card-hover)"
+              : "var(--shadow-card)",
+            transition:
+              "box-shadow var(--transition-base), transform var(--transition-base)",
+            transform: isHovered ? "translateY(-2px)" : "translateY(0)",
+          }}
+        >
+         
+          <div className="relative aspect-[2/3] overflow-hidden bg-[var(--color-surface-raised)] flex-shrink-0">
+            {book.coverImage ? (
+              <Image
+                src={book.coverImage}
+                alt={`Cover of ${book.title}`}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover"
                 style={{
-                  fontFamily: "var(--font-display)",
-                  color: spineColor,
-                  opacity: 0.5,
-                  textShadow: `0 2px 8px color-mix(in srgb, ${spineColor} 30%, transparent)`,
+                  transition: "transform var(--transition-slow)",
+                  transform: isHovered ? "scale(1.03)" : "scale(1)",
                 }}
-              >
-                {book.title.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          )}
-
-          {book.status === "CURRENTLY_READING" && progress !== null && (
-            <div
-              className="absolute bottom-2 right-2 rounded-full p-0.5"
-              style={{ backgroundColor: "rgba(15,15,15,0.85)", backdropFilter: "blur(4px)" }}
-            >
-              <ProgressRing percentage={progress} size={38} />
-            </div>
-          )}
-
-          <div
-            className="absolute inset-0 flex items-center justify-center gap-2"
-            style={{
-              backgroundColor: "rgba(0,0,0,0.6)",
-              backdropFilter: "blur(2px)",
-              opacity: isHovered ? 1 : 0,
-              transition: "opacity var(--transition-fast)",
-            }}
-            aria-hidden={!isHovered}
-          >
-  
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-             
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
-              style={{
-                backgroundColor: "var(--color-surface-raised)",
-                color: "var(--color-text-primary)",
-                border: "1px solid var(--color-border-hover)",
-              }}
-              aria-label={`Edit ${book.title}`}
-            >
-              <PencilIcon />
-              Edit
-            </button>
-
-            <button
-              onClick={handleDelete}
-              disabled={deleteBook.isPending}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
-              style={{
-                backgroundColor: confirmDelete
-                  ? "var(--color-danger)"
-                  : "var(--color-surface-raised)",
-                color: confirmDelete ? "#fff" : "var(--color-danger)",
-                border: `1px solid ${confirmDelete ? "var(--color-danger)" : "color-mix(in srgb, var(--color-danger) 40%, transparent)"}`,
-                transition: "all var(--transition-fast)",
-              }}
-              aria-label={confirmDelete ? "Click again to confirm deletion" : `Delete ${book.title}`}
-            >
-              <TrashIcon />
-              {deleteBook.isPending ? "Deleting…" : confirmDelete ? "Sure?" : "Delete"}
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2 p-3 flex-1">
-
-          <h3
-            className="text-sm font-semibold leading-snug line-clamp-2"
-            style={{
-              fontFamily: "var(--font-display)",
-              color: "var(--color-text-primary)",
-            }}
-          >
-            {book.title}
-          </h3>
-
-   
-          <p
-            className="text-xs leading-none"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            {book.author}
-          </p>
-
-        
-          {book.review?.rating && (
-            <StarRating rating={book.review.rating} size="sm" />
-          )}
-
-          <div className="mt-auto pt-2">
-            <StatusBadge status={book.status} size="sm" />
-          </div>
-
-          {book.status === "CURRENTLY_READING" &&
-            book.readingProgress?.currentPage && (
-              <p
-                className="text-[11px] tabular-nums"
+              />
+            ) : (
+              <div
+                className="w-full h-full flex items-center justify-center"
                 style={{
-                  fontFamily: "var(--font-mono)",
-                  color: "var(--color-text-muted)",
+                  background: `linear-gradient(135deg, color-mix(in srgb, ${spineColor} 20%, var(--color-surface-raised)) 0%, var(--color-surface-raised) 100%)`,
                 }}
+                aria-hidden="true"
               >
-                p. {book.readingProgress.currentPage}
-                {book.readingProgress.totalPages
-                  ? ` / ${book.readingProgress.totalPages}`
-                  : ""}
-              </p>
+                <span
+                  className="text-5xl font-bold select-none"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: spineColor,
+                    opacity: 0.5,
+                    textShadow: `0 2px 8px color-mix(in srgb, ${spineColor} 30%, transparent)`,
+                  }}
+                >
+                  {book.title.charAt(0).toUpperCase()}
+                </span>
+              </div>
             )}
-        </div>
-      </article>
-    </Link>
+
+         
+            {book.status === "CURRENTLY_READING" && progress !== null && (
+              <div
+                className="absolute bottom-2 right-2 rounded-full p-0.5"
+                style={{
+                  backgroundColor: "rgba(15,15,15,0.85)",
+                  backdropFilter: "blur(4px)",
+                }}
+              >
+                <ProgressRing percentage={progress} size={38} />
+              </div>
+            )}
+
+          
+            <div
+              className="absolute inset-0 flex items-center justify-center gap-2"
+              style={{
+                backgroundColor: "rgba(0,0,0,0.6)",
+                backdropFilter: "blur(2px)",
+                opacity: isHovered ? 1 : 0,
+                transition: "opacity var(--transition-fast)",
+              }}
+              aria-hidden={!isHovered}
+            >
+             
+              {book.status === "CURRENTLY_READING" && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowProgress(true);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
+                  style={{
+                    backgroundColor: "var(--color-accent)",
+                    color: "var(--color-bg)",
+                  }}
+                  aria-label={`Update progress for ${book.title}`}
+                >
+                  <BookmarkIcon />
+                  Progress
+                </button>
+              )}
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                 
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
+                style={{
+                  backgroundColor: "var(--color-surface-raised)",
+                  color: "var(--color-text-primary)",
+                  border: "1px solid var(--color-border-hover)",
+                }}
+                aria-label={`Edit ${book.title}`}
+              >
+                <PencilIcon />
+                Edit
+              </button>
+
+              <button
+                onClick={handleDelete}
+                disabled={deleteBook.isPending}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
+                style={{
+                  backgroundColor: confirmDelete
+                    ? "var(--color-danger)"
+                    : "var(--color-surface-raised)",
+                  color: confirmDelete ? "#fff" : "var(--color-danger)",
+                  border: `1px solid ${confirmDelete ? "var(--color-danger)" : "color-mix(in srgb, var(--color-danger) 40%, transparent)"}`,
+                  transition: "all var(--transition-fast)",
+                }}
+                aria-label={
+                  confirmDelete
+                    ? "Click again to confirm deletion"
+                    : `Delete ${book.title}`
+                }
+              >
+                <TrashIcon />
+                {deleteBook.isPending
+                  ? "Deleting…"
+                  : confirmDelete
+                    ? "Sure?"
+                    : "Delete"}
+              </button>
+            </div>
+          </div>
+
+         
+          <div className="flex flex-col gap-2 p-3 flex-1">
+            <h3
+              className="text-sm font-semibold leading-snug line-clamp-2"
+              style={{
+                fontFamily: "var(--font-display)",
+                color: "var(--color-text-primary)",
+              }}
+            >
+              {book.title}
+            </h3>
+
+            <p
+              className="text-xs leading-none"
+              style={{ color: "var(--color-text-muted)" }}
+            >
+              {book.author}
+            </p>
+
+            {book.review?.rating && (
+              <StarRating rating={book.review.rating} size="sm" />
+            )}
+
+            <div className="mt-auto pt-2">
+              <StatusBadge status={book.status} size="sm" />
+            </div>
+
+          
+            {book.status === "CURRENTLY_READING" &&
+              book.readingProgress?.currentPage != null && (
+                <ProgressBar
+                  currentPage={book.readingProgress.currentPage}
+                  totalPages={book.readingProgress.totalPages ?? null}
+                  compact
+                />
+              )}
+          </div>
+        </article>
+      </Link>
+
+      
+      {showProgress && (
+        <ProgressModal
+          book={book}
+          isOpen={showProgress}
+          onClose={() => setShowProgress(false)}
+        />
+      )}
+    </>
+  );
+}
+
+function BookmarkIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.8.4L8 13.1l-5.2 2.8A.5.5 0 0 1 2 15.5V2z" />
+    </svg>
   );
 }
 
