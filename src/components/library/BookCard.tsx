@@ -10,7 +10,6 @@ import { ProgressRing } from "../../components/ui/ProgressRing";
 import { StarRating } from "../../components/ui/StarRating";
 import { api } from "~/trpc/react";
 
-// The shape returned by bookRouter.getAll (includes readingProgress and review)
 type BookWithRelations = Book & {
   readingProgress: ReadingProgress | null;
   review: Review | null;
@@ -29,13 +28,12 @@ export function BookCard({ book, onDeleted }: Props) {
 
   const deleteBook = api.book.delete.useMutation({
     onSuccess: () => {
-      // Invalidate the library query so the grid refreshes
+   
       void utils.book.getAll.invalidate();
       onDeleted?.();
     },
   });
 
-  // Calculate reading progress percentage if available
   const progress =
     book.readingProgress?.currentPage && book.readingProgress?.totalPages
       ? Math.round(
@@ -44,7 +42,6 @@ export function BookCard({ book, onDeleted }: Props) {
         )
       : null;
 
-  // The spine color comes from the status config
   const spineColor = STATUS_CONFIG[book.status].spineVar;
 
   function handleDelete(e: React.MouseEvent) {
@@ -53,7 +50,6 @@ export function BookCard({ book, onDeleted }: Props) {
 
     if (!confirmDelete) {
       setConfirmDelete(true);
-      // Auto-reset confirm after 3s if user doesn't follow through
       setTimeout(() => setConfirmDelete(false), 3000);
       return;
     }
@@ -75,7 +71,7 @@ export function BookCard({ book, onDeleted }: Props) {
         className="relative flex flex-col h-full rounded-lg overflow-hidden"
         style={{
           backgroundColor: "var(--color-surface)",
-          // The signature spine — a colored left border per status
+    
           borderLeft: `3px solid ${spineColor}`,
           boxShadow: isHovered
             ? "var(--shadow-card-hover)"
@@ -84,7 +80,7 @@ export function BookCard({ book, onDeleted }: Props) {
           transform: isHovered ? "translateY(-2px)" : "translateY(0)",
         }}
       >
-        {/* ── Cover image area ─────────────────────────────────── */}
+    
         <div className="relative aspect-[2/3] overflow-hidden bg-[var(--color-surface-raised)] flex-shrink-0">
           {book.coverImage ? (
             <Image
@@ -99,7 +95,7 @@ export function BookCard({ book, onDeleted }: Props) {
               }}
             />
           ) : (
-            // Fallback letterpress cover
+
             <div
               className="w-full h-full flex items-center justify-center"
               style={{
@@ -121,7 +117,6 @@ export function BookCard({ book, onDeleted }: Props) {
             </div>
           )}
 
-          {/* Progress ring — only for books being read with page data */}
           {book.status === "CURRENTLY_READING" && progress !== null && (
             <div
               className="absolute bottom-2 right-2 rounded-full p-0.5"
@@ -131,7 +126,6 @@ export function BookCard({ book, onDeleted }: Props) {
             </div>
           )}
 
-          {/* Hover overlay with action buttons */}
           <div
             className="absolute inset-0 flex items-center justify-center gap-2"
             style={{
@@ -142,13 +136,12 @@ export function BookCard({ book, onDeleted }: Props) {
             }}
             aria-hidden={!isHovered}
           >
-            {/* Edit action */}
+  
             <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                // Will wire up to the edit modal in feat/library-ui step 2
-                // For now, navigation to detail page handles editing
+             
               }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
               style={{
@@ -162,7 +155,6 @@ export function BookCard({ book, onDeleted }: Props) {
               Edit
             </button>
 
-            {/* Delete action — two-step confirmation */}
             <button
               onClick={handleDelete}
               disabled={deleteBook.isPending}
@@ -183,9 +175,8 @@ export function BookCard({ book, onDeleted }: Props) {
           </div>
         </div>
 
-        {/* ── Card body ─────────────────────────────────────────── */}
         <div className="flex flex-col gap-2 p-3 flex-1">
-          {/* Title */}
+
           <h3
             className="text-sm font-semibold leading-snug line-clamp-2"
             style={{
@@ -196,7 +187,7 @@ export function BookCard({ book, onDeleted }: Props) {
             {book.title}
           </h3>
 
-          {/* Author */}
+   
           <p
             className="text-xs leading-none"
             style={{ color: "var(--color-text-muted)" }}
@@ -204,17 +195,15 @@ export function BookCard({ book, onDeleted }: Props) {
             {book.author}
           </p>
 
-          {/* Star rating — only if review exists with a rating */}
+        
           {book.review?.rating && (
             <StarRating rating={book.review.rating} size="sm" />
           )}
 
-          {/* Status badge — sits at the bottom of the card */}
           <div className="mt-auto pt-2">
             <StatusBadge status={book.status} size="sm" />
           </div>
 
-          {/* Page count — only for CURRENTLY_READING, shown in mono */}
           {book.status === "CURRENTLY_READING" &&
             book.readingProgress?.currentPage && (
               <p
@@ -236,7 +225,6 @@ export function BookCard({ book, onDeleted }: Props) {
   );
 }
 
-/* ── Inline SVG icons — no icon library dependency ─────────────────────── */
 function PencilIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">

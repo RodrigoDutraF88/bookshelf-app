@@ -1,12 +1,3 @@
-// src/components/library/StatusTabs.tsx
-//
-// Tab bar for filtering the library by BookStatus.
-// Renders a count badge per tab using data passed in from the parent.
-// 
-// Design: the active tab gets the accent underline — not a filled background.
-// This keeps the bar lightweight and doesn't compete with the card grid below.
-// On mobile, the tabs scroll horizontally (no wrapping).
-
 "use client";
 
 import type { BookStatus } from "../../../generated/prisma";
@@ -43,7 +34,7 @@ export function StatusTabs({ current, onChange, counts }: Props) {
   }));
 
   return (
-    // Outer wrapper: full-width, horizontally scrollable on mobile
+  
     <div
       className="flex gap-0 overflow-x-auto pb-px"
       style={{ borderBottom: "1px solid var(--color-border)" }}
@@ -65,15 +56,15 @@ export function StatusTabs({ current, onChange, counts }: Props) {
                 ? "var(--color-text-primary)"
                 : "var(--color-text-muted)",
               transition: "color var(--transition-fast)",
-              // The accent underline — the active indicator
+            
               borderBottom: isActive
                 ? "2px solid var(--color-accent)"
                 : "2px solid transparent",
-              marginBottom: "-1px", // sits on top of the container border
+              marginBottom: "-1px", 
             }}
           >
             {tab.label}
-            {/* Count badge — only show if > 0 */}
+          
             {tab.count > 0 && (
               <span
                 className="text-[11px] px-1.5 py-0.5 rounded-full tabular-nums font-medium"

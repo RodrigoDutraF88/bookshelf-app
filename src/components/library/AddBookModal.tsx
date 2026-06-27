@@ -30,7 +30,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
   const [isbn,          setIsbn]          = useState("");
   const [status,        setStatus]        = useState<BookStatus>("WANT_TO_READ");
 
-  // Live cover preview state
+ 
   const [coverPreviewError, setCoverPreviewError] = useState(false);
 
   const firstInputRef = useRef<HTMLInputElement>(null);
@@ -42,7 +42,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
     },
   });
 
-  // Close on Escape
+  
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape" && isOpen) onClose();
@@ -51,14 +51,14 @@ export function AddBookModal({ isOpen, onClose }: Props) {
     return () => document.removeEventListener("keydown", onKey);
   }, [isOpen, onClose]);
 
-  // Focus first input when modal opens
+  
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => firstInputRef.current?.focus(), 50);
     }
   }, [isOpen]);
 
-  // Lock body scroll while modal is open
+
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -101,7 +101,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
       aria-modal="true"
       aria-labelledby="add-book-title"
     >
-      {/* Modal panel */}
+   
       <div
         className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl"
         style={{
@@ -111,7 +111,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+
         <div
           className="flex items-center justify-between px-6 py-4 sticky top-0"
           style={{
@@ -140,12 +140,12 @@ export function AddBookModal({ isOpen, onClose }: Props) {
           </button>
         </div>
 
-        {/* Form body */}
+      
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6">
 
-          {/* Cover preview + URL side by side */}
+      
           <div className="flex gap-4 items-start">
-            {/* Cover thumbnail preview */}
+       
             <div
               className="flex-shrink-0 w-20 rounded-md overflow-hidden"
               style={{
@@ -155,7 +155,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
               }}
             >
               {coverImage && !coverPreviewError ? (
-                // eslint-disable-next-line @next/next/no-img-element
+                
                 <img
                   src={coverImage}
                   alt="Cover preview"
@@ -173,7 +173,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
               )}
             </div>
 
-            {/* Right side: title + author stacked */}
+     
             <div className="flex-1 flex flex-col gap-3">
               <Field label="Title" required>
                 <input
@@ -199,7 +199,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
             </div>
           </div>
 
-          {/* Cover image URL */}
+  
           <Field label="Cover image URL">
             <input
               type="url"
@@ -210,7 +210,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
             />
           </Field>
 
-          {/* Status */}
+   
           <Field label="Status">
             <select
               value={status}
@@ -225,7 +225,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
             </select>
           </Field>
 
-          {/* Description */}
+    
           <Field label="Description">
             <textarea
               value={description}
@@ -236,7 +236,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
             />
           </Field>
 
-          {/* Genres + Year — side by side */}
+   
           <div className="grid grid-cols-2 gap-3">
             <Field label="Genres" hint="Comma-separated">
               <input
@@ -260,7 +260,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
             </Field>
           </div>
 
-          {/* ISBN */}
+
           <Field label="ISBN" hint="Optional">
             <input
               type="text"
@@ -271,7 +271,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
             />
           </Field>
 
-          {/* Error message */}
+       
           {createBook.error && (
             <p
               className="text-sm px-3 py-2 rounded-md"
@@ -286,7 +286,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
             </p>
           )}
 
-          {/* Actions */}
+       
           <div className="flex gap-3 justify-end pt-1">
             <button
               type="button"
@@ -318,7 +318,6 @@ export function AddBookModal({ isOpen, onClose }: Props) {
   );
 }
 
-/* ── Shared form field wrapper ──────────────────────────────────────────── */
 function Field({
   label,
   hint,
@@ -354,7 +353,6 @@ function Field({
   );
 }
 
-/* ── Shared input class string ──────────────────────────────────────────── */
 const inputClass = [
   "w-full px-3 py-2 rounded-md text-sm outline-none",
   "bg-[var(--color-surface-raised)]",
@@ -365,7 +363,7 @@ const inputClass = [
   "transition-colors duration-150",
 ].join(" ");
 
-/* ── Icons ───────────────────────────────────────────────────────────────── */
+
 function CloseIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
