@@ -15,6 +15,7 @@ import DiscordProvider from "next-auth/providers/discord";
  */
 export const authConfigEdge = {
   providers: [DiscordProvider],
+  session: { strategy: "database" },
   callbacks: {
     authorized: ({ auth }) => !!auth?.user,
   },
