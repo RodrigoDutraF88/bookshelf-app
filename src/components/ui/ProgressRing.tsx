@@ -1,7 +1,7 @@
 
 type Props = {
-  percentage: number; // 0–100
-  size?: number;      // diameter in px, default 36
+  percentage: number; 
+  size?: number;      
   strokeWidth?: number;
 };
 
@@ -24,7 +24,7 @@ export function ProgressRing({
       aria-label={`${Math.round(clampedPct)}% read`}
       role="img"
     >
-      {/* Track */}
+ 
       <circle
         cx={center}
         cy={center}
@@ -33,7 +33,7 @@ export function ProgressRing({
         stroke="var(--color-border)"
         strokeWidth={strokeWidth}
       />
-      {/* Progress arc — starts from top (−90° rotation) */}
+    
       <circle
         cx={center}
         cy={center}
@@ -47,7 +47,7 @@ export function ProgressRing({
         transform={`rotate(-90 ${center} ${center})`}
         style={{ transition: "stroke-dashoffset 0.4s cubic-bezier(0.4,0,0.2,1)" }}
       />
-      {/* Center percentage text */}
+    
       <text
         x={center}
         y={center}

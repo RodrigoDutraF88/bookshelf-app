@@ -14,17 +14,17 @@ export function SearchBar({
   onChange,
   placeholder = "Search by title or author…",
 }: Props) {
-  // Internal state for the raw input — we debounce before calling onChange
+ 
   const [raw, setRaw] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Sync external value changes back into the input
+  
   useEffect(() => {
     setRaw(value);
   }, [value]);
 
-  // Debounce: fire onChange 300ms after the user stops typing
+  
   useEffect(() => {
     const id = setTimeout(() => {
       if (raw !== value) onChange(raw);
@@ -42,12 +42,12 @@ export function SearchBar({
     <div
       className="relative flex items-center"
       style={{
-        // Expand to full width on mobile, fixed width on larger screens
+      
         width: "100%",
         maxWidth: "360px",
       }}
     >
-      {/* Search icon */}
+     
       <span
         className="absolute left-3 pointer-events-none"
         style={{
@@ -79,7 +79,6 @@ export function SearchBar({
         aria-label="Search your library"
       />
 
-      {/* Clear button — only shown when there's a value */}
       {raw && (
         <button
           onClick={handleClear}

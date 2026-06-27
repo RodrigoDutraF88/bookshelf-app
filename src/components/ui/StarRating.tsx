@@ -1,6 +1,6 @@
 
 type Props = {
-  rating: number | null;   // 1–5 or null (no rating yet)
+  rating: number | null;  
   size?: "sm" | "md";
 };
 

@@ -78,7 +78,7 @@ export function EmptyState({ search, status, onAddBook }: Props) {
       role="status"
       aria-live="polite"
     >
-      {/* Icon glyph — text-based, not an SVG, so it scales perfectly */}
+     
       <span
         className="text-4xl select-none"
         style={{

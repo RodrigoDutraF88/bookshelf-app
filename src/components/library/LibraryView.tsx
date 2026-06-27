@@ -12,7 +12,7 @@ import { AddBookModal } from "./AddBookModal";
 
 type FilterStatus = BookStatus | null;
 
-// Skeleton card for loading state — same dimensions as BookCard
+
 function BookCardSkeleton() {
   return (
     <div
@@ -23,7 +23,7 @@ function BookCardSkeleton() {
         boxShadow: "var(--shadow-card)",
       }}
     >
-      {/* Cover placeholder */}
+     
       <div
         className="w-full"
         style={{
@@ -31,7 +31,7 @@ function BookCardSkeleton() {
           backgroundColor: "var(--color-surface-raised)",
         }}
       />
-      {/* Text placeholders */}
+    
       <div className="p-3 flex flex-col gap-2">
         <div className="h-3.5 rounded" style={{ backgroundColor: "var(--color-border-hover)", width: "80%" }} />
         <div className="h-3 rounded" style={{ backgroundColor: "var(--color-border)", width: "55%" }} />
@@ -52,8 +52,7 @@ export function LibraryView() {
     search:  search || undefined,
   });
 
-  // Compute per-status counts for the tab badges.
-  // We fetch ALL books for counts (no status filter) in a separate query.
+ 
   const { data: allBooks } = api.book.getAll.useQuery({});
 
   const counts: Record<BookStatus, number> = {
@@ -69,11 +68,11 @@ export function LibraryView() {
 
   return (
     <>
-      {/* ── Page header ─────────────────────────────────────────── */}
+     
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>
           <h1
-            className="text-3xl font-bold leading-tight"
+            className="text-4xl font-bold leading-tight"
             style={{ fontFamily: "var(--font-display)", color: "var(--color-text-primary)" }}
           >
             My Library
@@ -88,7 +87,6 @@ export function LibraryView() {
           </p>
         </div>
 
-        {/* Add book button */}
         <button
           onClick={() => setIsAddModalOpen(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold flex-shrink-0"
@@ -105,22 +103,18 @@ export function LibraryView() {
         </button>
       </div>
 
-      {/* ── Filters row ─────────────────────────────────────────── */}
       <div className="flex flex-col gap-4 mb-6">
-        {/* Status tabs */}
         <StatusTabs
           current={activeStatus}
           onChange={setActiveStatus}
           counts={counts}
         />
 
-        {/* Search bar — aligned right on desktop */}
         <div className="flex justify-between items-center gap-4">
           <SearchBar
             value={search}
             onChange={setSearch}
           />
-          {/* Book count for current filter */}
           {books && (
             <span
               className="text-sm flex-shrink-0"
@@ -133,7 +127,6 @@ export function LibraryView() {
         </div>
       </div>
 
-      {/* ── Grid / empty / error ─────────────────────────────────── */}
       {isError ? (
         <div
           className="flex flex-col items-center justify-center gap-3 py-20 text-center"
@@ -147,7 +140,6 @@ export function LibraryView() {
           </p>
         </div>
       ) : isLoading ? (
-        // Skeleton grid — same column count as the real grid
         <div
           className="grid gap-4"
           style={{
@@ -168,8 +160,7 @@ export function LibraryView() {
         <div
           className="grid gap-4"
           style={{
-            // Responsive grid: auto-fill, each card min 160px
-            // → 2 cols on mobile, 3 on tablet, 4–5 on desktop
+
             gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
           }}
         >
@@ -179,7 +170,7 @@ export function LibraryView() {
         </div>
       )}
 
-      {/* ── Add book modal ───────────────────────────────────────── */}
+  
       <AddBookModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
