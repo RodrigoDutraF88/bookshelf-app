@@ -1,10 +1,11 @@
 "use client";
 
-import type { Book, ReadingProgress } from "../../../generated/prisma";
+import type { Book, ReadingProgress,  Review } from "../../../generated/prisma";
 import { BookSpine } from "./BookSpine";
 
 type BookWithProgress = Book & {
   readingProgress: ReadingProgress | null;
+  review: Review | null;
 };
 
 interface BookshelfRowProps {
