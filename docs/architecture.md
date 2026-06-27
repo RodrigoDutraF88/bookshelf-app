@@ -1,4 +1,4 @@
-# Architecture (v.1.0.0)
+# Architecture (v.1.0.1)
 
 This document covers the overall system design, request flow, folder structure, and the reasoning behind key technical decisions.
 
@@ -35,6 +35,14 @@ NextAuth is purpose-built for the App Router. It handles the session cookie, OAu
 
 The Prisma Adapter stores sessions and accounts in the database, so there's no separate session store to manage.
 
+## The Edge / Node.js Config Split
+ 
+This is the most important architectural constraint in the auth layer.
+ 
+### Why two configs exist
+ 
+Next.js `middleware.ts` runs in the **Edge Runtime** — a V8 isolate that cannot import Node.js APIs. PrismaClient uses Node.js APIs (`fs`, `net`, `tls`) and will crash if imported in the edge runtime. Auth.js needs to run in middleware to protect pages, so two separate configs are required.
+
 ### Why no RLS?
 
 RLS would be a redundant layer,the tRPC context already scopes every query to the authenticated user. Keeping it out simplifies the database schema.
@@ -44,3 +52,4 @@ RLS would be a redundant layer,the tRPC context already scopes every query to th
 1. External book APIs (Google Books, Open Library)
 2. Social features: following users, activity feeds will require thinking about public vs private data scopes.
 3. AI features: ex: personalized book recommendations powered by AI.
+4. Barcode Scanner, Add Book by ISBN
