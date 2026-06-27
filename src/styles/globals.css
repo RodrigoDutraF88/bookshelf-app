@@ -527,7 +527,7 @@ h1, h2, h3 {
   width: 100%;
   transition: border-color 0.15s;
   outline: none;
-  -moz-appearance: textfield;
+ /* -moz-appearance: textfield;*/
 }
  
 .progress-modal__input::-webkit-outer-spin-button,

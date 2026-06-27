@@ -51,7 +51,7 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
     );
   }, [book.id, existing]);
 
-  const upsert = api.progress.upsertProgress.useMutation({
+  const upsert = api.progress.upsert.useMutation({
     onSuccess: async () => {
       await utils.book.getAll.invalidate();
       onClose();
