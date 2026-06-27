@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { api } from "~/trpc/react";
-import type { Book, ReadingProgress } from "../../../generated/prisma";
+import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
 
 type BookWithProgress = Book & {
   readingProgress: ReadingProgress | null;
+  review: Review | null;
 };
 
 interface ProgressModalProps {

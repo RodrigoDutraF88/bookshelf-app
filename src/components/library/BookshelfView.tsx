@@ -1,12 +1,13 @@
 "use client";
 
-import type { Book, ReadingProgress } from "../../../generated/prisma";
+import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
 import { useState } from "react";
 import { BookshelfRow } from "./BookshelfRow";
 import { BookCard } from "./BookCard"; 
 
 type BookWithProgress = Book & {
   readingProgress: ReadingProgress | null;
+  review: Review | null;
 };
 
 const BOOKS_PER_SHELF = 10;

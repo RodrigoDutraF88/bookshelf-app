@@ -1,13 +1,13 @@
 "use client";
 
-import type { Book, ReadingProgress } from "../../../generated/prisma";
+import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
 import { useState } from "react";
 import { ProgressModal } from "~/components/progress/ProgressModal";
 
 type BookWithProgress = Book & {
   readingProgress: ReadingProgress | null;
+  review: Review | null;
 };
-
 
 const SPINE_COLORS: Record<string, string> = {
   WANT_TO_READ: "var(--spine-want)",
