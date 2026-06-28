@@ -1,9 +1,7 @@
 import "~/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
-import { Playfair_Display } from "next/font/google";
-
+import { Archivo_Black, DM_Sans, Lora } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
@@ -12,14 +10,20 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Geist({
+const archivoBlack = Archivo_Black({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  weight: "400",
+  variable: "--font-display",
 });
 
-const playfair = Playfair_Display({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-body",
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-serif",
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
 });
@@ -28,7 +32,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${playfair.variable}`}>
+    <html
+      lang="en"
+      className={`${archivoBlack.variable} ${dmSans.variable} ${lora.variable}`}
+    >
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>

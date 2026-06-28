@@ -4,13 +4,15 @@ import { useState, useEffect } from "react";
 import { api } from "~/trpc/react";
 import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
 
-type BookWithProgress = Book & {
+
+
+type BookWithRelations = Book & {
   readingProgress: ReadingProgress | null;
   review: Review | null;
 };
 
 interface ProgressModalProps {
-  book: BookWithProgress;
+  book: BookWithRelations;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -36,7 +38,6 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
       : "",
   );
 
-  
   useEffect(() => {
     setCurrentPage(existing?.currentPage?.toString() ?? "0");
     setTotalPages(existing?.totalPages?.toString() ?? "");
@@ -52,41 +53,69 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
     );
   }, [book.id, existing]);
 
-  const upsert = api.progress.upsert.useMutation({
-    onSuccess: async () => {
-      await utils.book.getAll.invalidate();
-      onClose();
-    },
-  });
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen, onClose]);
+
+  const upsertProgress = api.progress.upsert.useMutation();
+
+  // Used when the user hits 100% — marks the book completed
+  const updateStatus = api.book.update.useMutation();
 
   const current = parseInt(currentPage, 10) || 0;
   const total = parseInt(totalPages, 10) || 0;
-  const percentage = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
+  const percentage =
+    total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
 
-  function handleSubmit() {
-    if (current < 0 || (total > 0 && current > total)) return;
+  const isComplete = total > 0 && current >= total;
 
-    upsert.mutate({
+  async function handleSubmit() {
+    if (current < 0) return;
+
+    const today = new Date().toISOString().split("T")[0]!;
+
+    // Upsert progress first
+    await upsertProgress.mutateAsync({
       bookId: book.id,
       currentPage: current,
       totalPages: total > 0 ? total : undefined,
       startedAt: startedAt ? new Date(startedAt) : undefined,
-      finishedAt: finishedAt ? new Date(finishedAt) : undefined,
+      // Auto-set finishedAt to today when completing
+      finishedAt: isComplete
+        ? (finishedAt ? new Date(finishedAt) : new Date(today))
+        : finishedAt
+          ? new Date(finishedAt)
+          : undefined,
     });
+
+    
+    if (isComplete && book.status !== "COMPLETED") {
+      await updateStatus.mutateAsync({
+        id: book.id,
+        status: "COMPLETED",
+      });
+    }
+
+    await utils.book.getAll.invalidate();
+    onClose();
   }
+
+  const isPending = upsertProgress.isPending || updateStatus.isPending;
+  const isError = upsertProgress.isError || updateStatus.isError;
 
   if (!isOpen) return null;
 
   return (
     <>
-      
       <div
         className="progress-modal-backdrop"
         onClick={onClose}
         aria-hidden="true"
       />
 
-  
       <div
         className="progress-modal"
         role="dialog"
@@ -108,7 +137,10 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
               </div>
             )}
             <div>
-              <h2 id="progress-modal-title" className="progress-modal__title">
+              <h2
+                id="progress-modal-title"
+                className="progress-modal__title"
+              >
                 {book.title}
               </h2>
               <p className="progress-modal__author">{book.author}</p>
@@ -117,13 +149,13 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
           <button
             onClick={onClose}
             className="progress-modal__close"
-            aria-label="Close progress tracker"
+            aria-label="Close"
           >
             ✕
           </button>
         </div>
 
-       
+
         <div className="progress-modal__ring-section">
           <ProgressArc percentage={percentage} />
           <div className="progress-modal__ring-label">
@@ -135,12 +167,24 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
                   ? `page ${current}`
                   : "Not started"}
             </span>
+            {/* Completion notice */}
+            {isComplete && book.status !== "COMPLETED" && (
+              <span
+                style={{
+                  fontSize: "12px",
+                  color: "var(--spine-completed)",
+                  fontWeight: 700,
+                  marginTop: "4px",
+                }}
+              >
+                ✓ Will mark as Completed
+              </span>
+            )}
           </div>
         </div>
 
-      
+        {/* Form */}
         <div className="progress-modal__form">
-          {/* Page inputs */}
           <div className="progress-modal__row">
             <div className="progress-modal__field">
               <label htmlFor="current-page" className="progress-modal__label">
@@ -173,7 +217,6 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
             </div>
           </div>
 
-         
           {total > 0 && (
             <div className="progress-modal__quick-set">
               {[25, 50, 75, 100].map((pct) => (
@@ -191,7 +234,6 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
             </div>
           )}
 
-        
           <div className="progress-modal__row">
             <div className="progress-modal__field">
               <label htmlFor="started-at" className="progress-modal__label">
@@ -219,7 +261,6 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
             </div>
           </div>
 
-         
           <div className="progress-modal__actions">
             <button
               onClick={onClose}
@@ -230,15 +271,19 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
             </button>
             <button
               onClick={handleSubmit}
-              disabled={upsert.isPending}
+              disabled={isPending}
               className="progress-modal__btn progress-modal__btn--save"
               type="button"
             >
-              {upsert.isPending ? "Saving…" : "Save progress"}
+              {isPending
+                ? "Saving…"
+                : isComplete && book.status !== "COMPLETED"
+                  ? "Complete book ✓"
+                  : "Save progress"}
             </button>
           </div>
 
-          {upsert.isError && (
+          {isError && (
             <p className="progress-modal__error">
               Something went wrong. Please try again.
             </p>
@@ -252,8 +297,7 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
 function ProgressArc({ percentage }: { percentage: number }) {
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset =
-    circumference - (percentage / 100) * circumference;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
     <svg
@@ -263,28 +307,22 @@ function ProgressArc({ percentage }: { percentage: number }) {
       className="progress-arc"
       aria-hidden="true"
     >
-   
       <circle
-        cx="70"
-        cy="70"
-        r={radius}
+        cx="70" cy="70" r={radius}
         fill="none"
-        stroke="var(--color-surface-raised)"
+        stroke="var(--color-border)"
         strokeWidth="10"
       />
-    
       <circle
-        cx="70"
-        cy="70"
-        r={radius}
+        cx="70" cy="70" r={radius}
         fill="none"
-        stroke="var(--color-accent)"
+        stroke={percentage >= 100 ? "var(--spine-completed)" : "var(--color-accent)"}
         strokeWidth="10"
         strokeLinecap="round"
         strokeDasharray={circumference}
         strokeDashoffset={strokeDashoffset}
         transform="rotate(-90 70 70)"
-        style={{ transition: "stroke-dashoffset 0.4s ease" }}
+        style={{ transition: "stroke-dashoffset 0.4s ease, stroke 0.3s ease" }}
       />
     </svg>
   );
