@@ -75,7 +75,7 @@ export function LibraryView() {
               color: "var(--color-text-primary)",
             }}
           >
-            My Library
+            My Bookshelf Library
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--color-text-muted)" }}>
             {allBooks
