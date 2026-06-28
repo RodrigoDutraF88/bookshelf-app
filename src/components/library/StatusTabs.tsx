@@ -1,85 +1,94 @@
 "use client";
-
 import type { BookStatus } from "../../../generated/prisma";
 
-// null means "show all books"
-type FilterStatus = BookStatus | null;
-
-type TabItem = {
-  value: FilterStatus;
-  label: string;
-  count: number;
-};
-
-type Props = {
-  current: FilterStatus;
-  onChange: (status: FilterStatus) => void;
+interface StatusTabsProps {
+  current: BookStatus | null;
+  onChange: (status: BookStatus | null) => void;
   counts: Record<BookStatus, number>;
-};
+}
 
-const TAB_ORDER: { value: FilterStatus; label: string }[] = [
-  { value: null,              label: "All" },
-  { value: "CURRENTLY_READING", label: "Reading" },
-  { value: "WANT_TO_READ",    label: "Want to Read" },
-  { value: "COMPLETED",       label: "Completed" },
-  { value: "DROPPED",         label: "Dropped" },
+const TABS: { label: string; value: BookStatus | null }[] = [
+  { label: "All",              value: null },
+  { label: "Reading",          value: "CURRENTLY_READING" },
+  { label: "Want to Read",     value: "WANT_TO_READ" },
+  { label: "Completed",        value: "COMPLETED" },
+  { label: "Dropped",          value: "DROPPED" },
 ];
 
-export function StatusTabs({ current, onChange, counts }: Props) {
-  const totalCount = Object.values(counts).reduce((a, b) => a + b, 0);
+const totalCount = (counts: Record<BookStatus, number>) =>
+  Object.values(counts).reduce((a, b) => a + b, 0);
 
-  const tabs: TabItem[] = TAB_ORDER.map((t) => ({
-    ...t,
-    count: t.value === null ? totalCount : counts[t.value] ?? 0,
-  }));
-
+export function StatusTabs({ current, onChange, counts }: StatusTabsProps) {
   return (
-  
     <div
-      className="flex gap-0 overflow-x-auto pb-px"
-      style={{ borderBottom: "1px solid var(--color-border)" }}
       role="tablist"
-      aria-label="Filter library by reading status"
+      aria-label="Filter by reading status"
+      style={{
+        display: "flex",
+        gap: "6px",
+        overflowX: "auto",
+        paddingBottom: "2px",
+        scrollbarWidth: "none",
+      }}
     >
-      {tabs.map((tab) => {
-        const isActive = tab.value === current;
+      {TABS.map(({ label, value }) => {
+        const isActive = current === value;
+        const count = value === null ? totalCount(counts) : counts[value];
 
         return (
           <button
-            key={tab.value ?? "all"}
+            key={label}
             role="tab"
             aria-selected={isActive}
-            onClick={() => onChange(tab.value)}
-            className="flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap flex-shrink-0 relative"
+            onClick={() => onChange(value)}
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "7px 14px",
+              borderRadius: "999px",
+              border: "1.5px solid",
+              borderColor: isActive
+                ? "var(--color-accent)"
+                : "var(--color-border)",
+              backgroundColor: isActive
+                ? "var(--color-accent)"
+                : "var(--color-surface)",
               color: isActive
-                ? "var(--color-text-primary)"
-                : "var(--color-text-muted)",
-              transition: "color var(--transition-fast)",
-            
-              borderBottom: isActive
-                ? "2px solid var(--color-accent)"
-                : "2px solid transparent",
-              marginBottom: "-1px", 
+                ? "var(--color-text-inverse)"
+                : "var(--color-text-secondary)",
+              fontSize: "13px",
+              fontWeight: isActive ? 700 : 500,
+              fontFamily: "var(--font-body)",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
+              transition: "all 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow: isActive ? "0 2px 8px var(--color-accent-glow)" : "none",
             }}
           >
-            {tab.label}
-          
-            {tab.count > 0 && (
+            {label}
+            {count > 0 && (
               <span
-                className="text-[11px] px-1.5 py-0.5 rounded-full tabular-nums font-medium"
                 style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "18px",
+                  height: "18px",
+                  padding: "0 5px",
+                  borderRadius: "999px",
+                  fontSize: "11px",
+                  fontWeight: 700,
                   backgroundColor: isActive
-                    ? "var(--color-accent-glass)"
-                    : "var(--color-surface-raised)",
+                    ? "rgba(255,255,255,0.25)"
+                    : "rgba(139, 99, 64, 0.12)",
                   color: isActive
-                    ? "var(--color-accent)"
+                    ? "var(--color-text-inverse)"
                     : "var(--color-text-muted)",
-                  fontFamily: "var(--font-mono)",
-                  transition: "all var(--transition-fast)",
                 }}
               >
-                {tab.count}
+                {count}
               </span>
             )}
           </button>

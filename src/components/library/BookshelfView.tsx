@@ -2,31 +2,41 @@
 
 import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
 import { useState } from "react";
-import { BookshelfRow } from "./BookshelfRow";
 import { BookCard } from "./BookCard"; 
+import { BookSpine } from "./BookSpine";
 
-type BookWithProgress = Book & {
+
+type BookWithRelations = Book & {
   readingProgress: ReadingProgress | null;
   review: Review | null;
 };
 
-const BOOKS_PER_SHELF = 10;
-
 type ViewMode = "shelf" | "grid";
 
+const BOOKS_PER_SHELF = 12;
+
+const STATUS_SHELF_LABELS: Record<string, string> = {
+  CURRENTLY_READING: "Currently Reading",
+  WANT_TO_READ:      "Want to Read",
+  COMPLETED:         "Completed",
+  DROPPED:           "Dropped",
+};
+
+// Status display order
+const STATUS_ORDER = [
+  "CURRENTLY_READING",
+  "WANT_TO_READ",
+  "COMPLETED",
+  "DROPPED",
+] as const;
+
 interface BookshelfViewProps {
-  books: BookWithProgress[];
+  books: BookWithRelations[];
   onAddBook?: () => void;
 }
 
 export function BookshelfView({ books, onAddBook }: BookshelfViewProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("shelf");
-
- 
-  const shelves: BookWithProgress[][] = [];
-  for (let i = 0; i < books.length; i += BOOKS_PER_SHELF) {
-    shelves.push(books.slice(i, i + BOOKS_PER_SHELF));
-  }
 
   if (books.length === 0) {
     return (
@@ -41,9 +51,19 @@ export function BookshelfView({ books, onAddBook }: BookshelfViewProps) {
     );
   }
 
+ 
+  const grouped = STATUS_ORDER.reduce<Record<string, BookWithRelations[]>>(
+    (acc, status) => {
+      const booksForStatus = books.filter((b) => b.status === status);
+      if (booksForStatus.length > 0) acc[status] = booksForStatus;
+      return acc;
+    },
+    {},
+  );
+
   return (
     <div className="bookshelf-view">
-   
+      {/* Toolbar */}
       <div className="bookshelf-view__toolbar">
         <span className="bookshelf-view__count">
           {books.length} {books.length === 1 ? "book" : "books"}
@@ -55,14 +75,7 @@ export function BookshelfView({ books, onAddBook }: BookshelfViewProps) {
             aria-pressed={viewMode === "shelf"}
             title="Shelf view"
           >
-    
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <rect x="1" y="3" width="3" height="12" rx="1" fill="currentColor" />
-              <rect x="5" y="5" width="3" height="10" rx="1" fill="currentColor" />
-              <rect x="9" y="2" width="3" height="13" rx="1" fill="currentColor" />
-              <rect x="13" y="4" width="3" height="11" rx="1" fill="currentColor" />
-              <rect x="0" y="15" width="18" height="2" rx="1" fill="currentColor" />
-            </svg>
+            <ShelfIcon />
           </button>
           <button
             onClick={() => setViewMode("grid")}
@@ -70,22 +83,45 @@ export function BookshelfView({ books, onAddBook }: BookshelfViewProps) {
             aria-pressed={viewMode === "grid"}
             title="Grid view"
           >
-         
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <rect x="1" y="1" width="7" height="7" rx="1" fill="currentColor" />
-              <rect x="10" y="1" width="7" height="7" rx="1" fill="currentColor" />
-              <rect x="1" y="10" width="7" height="7" rx="1" fill="currentColor" />
-              <rect x="10" y="10" width="7" height="7" rx="1" fill="currentColor" />
-            </svg>
+            <GridIcon />
           </button>
         </div>
       </div>
 
       {viewMode === "shelf" ? (
         <div className="bookshelf-view__shelves">
-          {shelves.map((row, idx) => (
-            <BookshelfRow key={idx} books={row} />
-          ))}
+          {Object.entries(grouped).map(([status, statusBooks]) => {
+  
+            const rows: BookWithRelations[][] = [];
+            for (let i = 0; i < statusBooks.length; i += BOOKS_PER_SHELF) {
+              rows.push(statusBooks.slice(i, i + BOOKS_PER_SHELF));
+            }
+
+            return (
+              <div key={status} style={{ marginBottom: "8px" }}>
+                {rows.map((row, rowIdx) => (
+                  <div key={rowIdx} className="shelf-row">
+          
+                    {rowIdx === 0 && (
+                      <p className="shelf-row__label">
+                        {STATUS_SHELF_LABELS[status]}
+                      </p>
+                    )}
+                    <div className="shelf-row__books">
+                      {row.map((book, bookIdx) => (
+                        <BookSpine
+                          key={book.id}
+                          book={book}
+                          index={rowIdx * BOOKS_PER_SHELF + bookIdx}
+                        />
+                      ))}
+                    </div>
+                    <div className="shelf-row__ledge" aria-hidden="true" />
+                  </div>
+                ))}
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="bookshelf-view__grid">
@@ -95,5 +131,28 @@ export function BookshelfView({ books, onAddBook }: BookshelfViewProps) {
         </div>
       )}
     </div>
+  );
+}
+
+function ShelfIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <rect x="1" y="3" width="3" height="12" rx="1" fill="currentColor" />
+      <rect x="5" y="5" width="3" height="10" rx="1" fill="currentColor" />
+      <rect x="9" y="2" width="3" height="13" rx="1" fill="currentColor" />
+      <rect x="13" y="4" width="3" height="11" rx="1" fill="currentColor" />
+      <rect x="0" y="15" width="18" height="2" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function GridIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <rect x="1" y="1" width="7" height="7" rx="1" fill="currentColor" />
+      <rect x="10" y="1" width="7" height="7" rx="1" fill="currentColor" />
+      <rect x="1" y="10" width="7" height="7" rx="1" fill="currentColor" />
+      <rect x="10" y="10" width="7" height="7" rx="1" fill="currentColor" />
+    </svg>
   );
 }

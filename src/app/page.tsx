@@ -1,6 +1,5 @@
 // Next.js App Router page for the library.
 // This is a SERVER Component it handles: Session check Page metadata Renders the LibraryView Client Component
-
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
@@ -14,18 +13,19 @@ export const metadata: Metadata = {
 export default async function LibraryPage() {
   const session = await auth();
 
-  // Redirect unauthenticated users to sign-in
   if (!session?.user) {
     redirect("/api/auth/signin");
   }
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--color-bg)" }}>
-
-      <div
-        className="mx-auto w-full px-4 py-8 sm:px-6 lg:px-8"
-        style={{ maxWidth: "1280px" }}
-      >
+    <main
+      style={{
+        minHeight: "100dvh",
+        backgroundColor: "var(--color-bg)",
+        padding: "48px 24px 80px",
+      }}
+    >
+      <div style={{ maxWidth: "900px", margin: "0 auto", width: "100%" }}>
         <LibraryView />
       </div>
     </main>
