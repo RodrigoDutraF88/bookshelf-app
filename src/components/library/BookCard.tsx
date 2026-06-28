@@ -9,7 +9,9 @@ import { ProgressRing } from "../../components/ui/ProgressRing";
 import { StarRating } from "../../components/ui/StarRating";
 import { ProgressBar } from "../../components/progress/ProgressBar";
 import { ProgressModal } from "../../components/progress/ProgressModal";
+import { ReviewModal } from "../../components/reviews/ReviewModal";
 import { api } from "~/trpc/react";
+
 
 type BookWithRelations = Book & {
   readingProgress: ReadingProgress | null;
@@ -25,6 +27,7 @@ export function BookCard({ book, onDeleted }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   const utils = api.useUtils();
 
@@ -44,6 +47,10 @@ export function BookCard({ book, onDeleted }: Props) {
       : null;
 
   const spineColor = STATUS_CONFIG[book.status].spineVar;
+
+  // Show review button for completed or dropped books
+  const canReview =
+    book.status === "COMPLETED" || book.status === "DROPPED";
 
   function handleDelete(e: React.MouseEvent) {
     e.preventDefault();
@@ -80,7 +87,7 @@ export function BookCard({ book, onDeleted }: Props) {
             transform: isHovered ? "translateY(-2px)" : "translateY(0)",
           }}
         >
-         
+        
           <div className="relative aspect-[2/3] overflow-hidden bg-[var(--color-surface-raised)] flex-shrink-0">
             {book.coverImage ? (
               <Image
@@ -108,7 +115,6 @@ export function BookCard({ book, onDeleted }: Props) {
                     fontFamily: "var(--font-display)",
                     color: spineColor,
                     opacity: 0.5,
-                    textShadow: `0 2px 8px color-mix(in srgb, ${spineColor} 30%, transparent)`,
                   }}
                 >
                   {book.title.charAt(0).toUpperCase()}
@@ -116,7 +122,7 @@ export function BookCard({ book, onDeleted }: Props) {
               </div>
             )}
 
-         
+        
             {book.status === "CURRENTLY_READING" && progress !== null && (
               <div
                 className="absolute bottom-2 right-2 rounded-full p-0.5"
@@ -129,18 +135,18 @@ export function BookCard({ book, onDeleted }: Props) {
               </div>
             )}
 
-          
+      
             <div
-              className="absolute inset-0 flex items-center justify-center gap-2"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-2"
               style={{
-                backgroundColor: "rgba(0,0,0,0.6)",
+                backgroundColor: "rgba(0,0,0,0.65)",
                 backdropFilter: "blur(2px)",
                 opacity: isHovered ? 1 : 0,
                 transition: "opacity var(--transition-fast)",
               }}
               aria-hidden={!isHovered}
             >
-             
+       
               {book.status === "CURRENTLY_READING" && (
                 <button
                   onClick={(e) => {
@@ -148,11 +154,7 @@ export function BookCard({ book, onDeleted }: Props) {
                     e.stopPropagation();
                     setShowProgress(true);
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
-                  style={{
-                    backgroundColor: "var(--color-accent)",
-                    color: "var(--color-bg)",
-                  }}
+                  className="card-overlay-btn card-overlay-btn--accent"
                   aria-label={`Update progress for ${book.title}`}
                 >
                   <BookmarkIcon />
@@ -160,35 +162,50 @@ export function BookCard({ book, onDeleted }: Props) {
                 </button>
               )}
 
+
+              {canReview && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowReview(true);
+                  }}
+                  className="card-overlay-btn card-overlay-btn--accent"
+                  aria-label={
+                    book.review
+                      ? `Edit review for ${book.title}`
+                      : `Write a review for ${book.title}`
+                  }
+                >
+                  <PenIcon />
+                  {book.review ? "Edit review" : "Review"}
+                </button>
+              )}
+
+  
               <button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                 
+              
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
-                style={{
-                  backgroundColor: "var(--color-surface-raised)",
-                  color: "var(--color-text-primary)",
-                  border: "1px solid var(--color-border-hover)",
-                }}
+                className="card-overlay-btn card-overlay-btn--ghost"
                 aria-label={`Edit ${book.title}`}
               >
                 <PencilIcon />
                 Edit
               </button>
 
+        
               <button
                 onClick={handleDelete}
                 disabled={deleteBook.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
+                className="card-overlay-btn card-overlay-btn--danger"
                 style={{
                   backgroundColor: confirmDelete
                     ? "var(--color-danger)"
-                    : "var(--color-surface-raised)",
-                  color: confirmDelete ? "#fff" : "var(--color-danger)",
-                  border: `1px solid ${confirmDelete ? "var(--color-danger)" : "color-mix(in srgb, var(--color-danger) 40%, transparent)"}`,
-                  transition: "all var(--transition-fast)",
+                    : undefined,
+                  color: confirmDelete ? "#fff" : undefined,
                 }}
                 aria-label={
                   confirmDelete
@@ -206,7 +223,7 @@ export function BookCard({ book, onDeleted }: Props) {
             </div>
           </div>
 
-         
+
           <div className="flex flex-col gap-2 p-3 flex-1">
             <h3
               className="text-sm font-semibold leading-snug line-clamp-2"
@@ -218,12 +235,10 @@ export function BookCard({ book, onDeleted }: Props) {
               {book.title}
             </h3>
 
-            <p
-              className="text-xs leading-none"
-              style={{ color: "var(--color-text-muted)" }}
-            >
+            <p className="text-xs leading-none" style={{ color: "var(--color-text-muted)" }}>
               {book.author}
             </p>
+
 
             {book.review?.rating && (
               <StarRating rating={book.review.rating} size="sm" />
@@ -233,7 +248,7 @@ export function BookCard({ book, onDeleted }: Props) {
               <StatusBadge status={book.status} size="sm" />
             </div>
 
-          
+      
             {book.status === "CURRENTLY_READING" &&
               book.readingProgress?.currentPage != null && (
                 <ProgressBar
@@ -242,11 +257,21 @@ export function BookCard({ book, onDeleted }: Props) {
                   compact
                 />
               )}
+
+       
+            {book.review?.body && (
+              <p
+                className="text-[11px] leading-snug line-clamp-2 italic"
+                style={{ color: "var(--color-text-muted)" }}
+              >
+                "{book.review.body}"
+              </p>
+            )}
           </div>
         </article>
       </Link>
 
-      
+
       {showProgress && (
         <ProgressModal
           book={book}
@@ -254,14 +279,32 @@ export function BookCard({ book, onDeleted }: Props) {
           onClose={() => setShowProgress(false)}
         />
       )}
+
+      {showReview && (
+        <ReviewModal
+          book={book}
+          isOpen={showReview}
+          onClose={() => setShowReview(false)}
+        />
+      )}
     </>
   );
 }
+
 
 function BookmarkIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
       <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.8.4L8 13.1l-5.2 2.8A.5.5 0 0 1 2 15.5V2z" />
+    </svg>
+  );
+}
+
+function PenIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
     </svg>
   );
 }
