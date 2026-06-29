@@ -17,8 +17,12 @@ export function BookshelfRow({ books }: BookshelfRowProps) {
     <div className="shelf-row">
      
       <div className="shelf-row__books">
-        {books.map((book) => (
-          <BookSpine key={book.id} book={book} />
+        {books.map((book, bookIdx) => (
+          <BookSpine
+            key={book.id}
+            book={book}
+            index={bookIdx}  
+          />
         ))}
       </div>
       

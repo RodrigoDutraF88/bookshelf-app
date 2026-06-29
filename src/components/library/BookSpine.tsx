@@ -13,6 +13,7 @@ type BookWithRelations = Book & {
 interface BookSpineProps {
   book: BookWithRelations;
   index: number; 
+  
 }
 
 
