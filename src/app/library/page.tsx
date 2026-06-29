@@ -1,4 +1,3 @@
-// src/app/library/page.tsx
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
