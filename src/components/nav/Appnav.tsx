@@ -60,13 +60,13 @@ export function AppNav({ user }: AppNavProps) {
             maxWidth: "900px",
             margin: "0 auto",
             padding: "0 24px",
-            height: "58px",
+            height: "85px",
             display: "flex",
             alignItems: "center",
             gap: "8px",
           }}
         >
-          {/* Logo */}
+      
           <Link
             href="/library"
             style={{
@@ -91,7 +91,7 @@ export function AppNav({ user }: AppNavProps) {
             </span>
           </Link>
 
-          {/* Nav links */}
+   
           <nav
             style={{ display: "flex", alignItems: "center", gap: "2px", flex: 1 }}
             aria-label="Main navigation"
@@ -126,7 +126,7 @@ export function AppNav({ user }: AppNavProps) {
             })}
           </nav>
 
-          {/* Avatar button */}
+       
           <div ref={menuRef} style={{ position: "relative", flexShrink: 0 }}>
             <button
               onClick={() => setMenuOpen((o) => !o)}
@@ -150,7 +150,7 @@ export function AppNav({ user }: AppNavProps) {
                 transition: "all 150ms ease",
               }}
             >
-              {/* Avatar */}
+              
               {user.image ? (
                 <Image
                   src={user.image}
@@ -207,7 +207,7 @@ export function AppNav({ user }: AppNavProps) {
               </svg>
             </button>
 
-            {/* Dropdown */}
+        
             {menuOpen && (
               <div
                 role="menu"
@@ -224,7 +224,7 @@ export function AppNav({ user }: AppNavProps) {
                   animation: "fade-down 0.15s ease both",
                 }}
               >
-                {/* User identity */}
+         
                 <div
                   style={{
                     padding: "14px 16px",
@@ -257,7 +257,7 @@ export function AppNav({ user }: AppNavProps) {
                   )}
                 </div>
 
-                {/* Items */}
+              
                 <div style={{ padding: "6px" }}>
                   {[
                     { href: "/profile", icon: <UserIcon />, label: "My Profile" },
@@ -354,7 +354,7 @@ export function AppNav({ user }: AppNavProps) {
   );
 }
 
-/* ── Mini SVG icons ─────────────────────────────────────────────────────────*/
+
 function NavLogo() {
   return (
     <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">

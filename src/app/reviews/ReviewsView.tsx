@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { api } from "~/trpc/react";
-import { ReviewCard } from "./ReviewCard";
+import { ReviewCard } from "../../components/reviews/ReviewCard";
 
 type SortOrder = "recent" | "rating-high" | "rating-low";
 

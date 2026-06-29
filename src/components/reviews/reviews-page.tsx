@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
-import { ReviewsView } from "./ReviewsView";
+import { ReviewsView } from "../../app/reviews/ReviewsView";
 
 export const metadata: Metadata = {
   title: "My Reviews — Bookshelf",
