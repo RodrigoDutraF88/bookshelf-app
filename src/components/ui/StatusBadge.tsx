@@ -56,5 +56,5 @@ export function StatusBadge({ status, size = "md" }: Props) {
   );
 }
 
-// Export config so BookCard can access the spine color directly
+
 export { STATUS_CONFIG };
