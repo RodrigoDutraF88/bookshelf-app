@@ -24,7 +24,7 @@ export function ReviewModal({ book, isOpen, onClose }: ReviewModalProps) {
   const [rating, setRating] = useState<number | null>(existing?.rating ?? null);
   const [body, setBody] = useState(existing?.body ?? "");
 
-  // Sync form state when the book prop changes (e.g. switching books)
+  
   useEffect(() => {
     setRating(existing?.rating ?? null);
     setBody(existing?.body ?? "");
@@ -51,7 +51,7 @@ export function ReviewModal({ book, isOpen, onClose }: ReviewModalProps) {
     });
   }
 
-  // Close on Escape
+ 
   useEffect(() => {
     if (!isOpen) return;
     function onKey(e: KeyboardEvent) {
@@ -69,21 +69,21 @@ export function ReviewModal({ book, isOpen, onClose }: ReviewModalProps) {
 
   return (
     <>
-      {/* Backdrop */}
+   
       <div
         className="review-modal-backdrop"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Drawer */}
+ 
       <div
         className="review-modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="review-modal-title"
       >
-        {/* Header */}
+     
         <div className="review-modal__header">
           <div className="review-modal__book-info">
             {book.coverImage ? (
@@ -122,7 +122,7 @@ export function ReviewModal({ book, isOpen, onClose }: ReviewModalProps) {
           </button>
         </div>
 
-        {/* Star rating */}
+
         <div className="review-modal__rating-section">
           <InteractiveStarRating value={rating} onChange={setRating} />
           {rating !== null && (
@@ -136,10 +136,10 @@ export function ReviewModal({ book, isOpen, onClose }: ReviewModalProps) {
           )}
         </div>
 
-        {/* Divider */}
+       
         <div className="review-modal__divider" aria-hidden="true" />
 
-        {/* Review body */}
+
         <div className="review-modal__body-section">
           <label
             htmlFor="review-body"
@@ -169,7 +169,7 @@ export function ReviewModal({ book, isOpen, onClose }: ReviewModalProps) {
           </p>
         </div>
 
-        {/* Actions */}
+      
         <div className="review-modal__actions">
           <button
             type="button"

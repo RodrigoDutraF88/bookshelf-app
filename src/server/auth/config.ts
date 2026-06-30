@@ -14,15 +14,13 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      createdAt: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+
 }
 
 /**
@@ -41,6 +39,8 @@ export const authConfig = {
       user: {
         ...session.user,
         id: user.id,
+        createdAt: (user as unknown as { createdAt: Date }).createdAt
+          ?.toISOString() ?? new Date().toISOString(),
       },
     }),
   },
