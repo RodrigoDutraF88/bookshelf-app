@@ -2,8 +2,7 @@
 
 import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
 import { useState } from "react";
-import { ProgressModal } from "~/components/progress/ProgressModal";
-
+import { BookDetailModal } from "~/components/library/BookDetailModal";
 
 type BookWithRelations = Book & {
   readingProgress: ReadingProgress | null;
@@ -12,10 +11,8 @@ type BookWithRelations = Book & {
 
 interface BookSpineProps {
   book: BookWithRelations;
-  index: number; 
-  
+  index: number;
 }
-
 
 function hashString(str: string): number {
   let hash = 0;
@@ -33,7 +30,6 @@ const SPINE_COLORS: Record<string, string> = {
   DROPPED:           "var(--spine-dropped)",
 };
 
-
 const ALT_COLORS = [
   "var(--spine-alt-1)",
   "var(--spine-alt-2)",
@@ -44,35 +40,25 @@ const ALT_COLORS = [
 ];
 
 export function BookSpine({ book, index }: BookSpineProps) {
-  const [hovered, setHovered] = useState(false);
-  const [showProgress, setShowProgress] = useState(false);
+  const [hovered, setHovered]         = useState(false);
+  const [showDetail, setShowDetail]   = useState(false);
 
-  const hash = hashString(book.id);
+  const hash   = hashString(book.id);
+  const width  = 45 + (hash % 5) * 5;
+  const height = 200 + ((hash >> 3) % 7) * 10;
 
-  const width = 45 + (hash % 5) * 5; 
+  const tiltIndex  = (hash >> 6) % 5;
+  const tiltValues = [-1.5, -0.8, 0, 0, 0.8];
+  const tilt       = tiltValues[tiltIndex] ?? 0;
 
-
-  const height = 200 + ((hash >> 3) % 7) * 10; 
-
-
-  const tiltIndex = (hash >> 6) % 5;
-  const tiltValues = [-1.5, -0.8, 0, 0, 0.8]; 
-  const tilt = tiltValues[tiltIndex] ?? 0;
-
-
-  const useAlt = book.status !== "CURRENTLY_READING" && (hash >> 9) % 4 === 0;
+  const useAlt    = book.status !== "CURRENTLY_READING" && (hash >> 9) % 4 === 0;
   const spineColor = useAlt
     ? (ALT_COLORS[(hash >> 12) % ALT_COLORS.length] ?? "var(--spine-want)")
     : (SPINE_COLORS[book.status] ?? "var(--spine-want)");
 
   const progress =
     book.readingProgress?.currentPage && book.readingProgress?.totalPages
-      ? Math.min(
-          100,
-          Math.round(
-            (book.readingProgress.currentPage / book.readingProgress.totalPages) * 100,
-          ),
-        )
+      ? Math.min(100, Math.round((book.readingProgress.currentPage / book.readingProgress.totalPages) * 100))
       : null;
 
   return (
@@ -80,33 +66,26 @@ export function BookSpine({ book, index }: BookSpineProps) {
       <div
         className={`book-spine${hovered ? " book-spine--hovered" : ""}`}
         style={{
-          "--spine-color": spineColor,
-          "--spine-width": `${width}px`,
+          "--spine-color":  spineColor,
+          "--spine-width":  `${width}px`,
           "--spine-height": `${height}px`,
-          "--spine-tilt": `${tilt}deg`,
+          "--spine-tilt":   `${tilt}deg`,
         } as React.CSSProperties}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        onClick={() => {
-          if (book.status === "CURRENTLY_READING") setShowProgress(true);
-        }}
+        onClick={() => setShowDetail(true)}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            if (book.status === "CURRENTLY_READING") setShowProgress(true);
-          }
+          if (e.key === "Enter" || e.key === " ") setShowDetail(true);
         }}
-        aria-label={`${book.title} by ${book.author}${
-          book.status === "CURRENTLY_READING" ? " — click to update progress" : ""
-        }`}
+        aria-label={`${book.title} by ${book.author} — click to view details`}
       >
         <div className="book-spine__strip">
           <span className="book-spine__title">{book.title}</span>
           <span className="book-spine__author">{book.author}</span>
         </div>
 
-   
         {book.status === "CURRENTLY_READING" && progress !== null && (
           <div
             className="book-spine__progress-fill"
@@ -115,7 +94,6 @@ export function BookSpine({ book, index }: BookSpineProps) {
           />
         )}
 
-        
         {hovered && (
           <div className="book-spine__tooltip" role="tooltip">
             <p className="book-spine__tooltip-title">{book.title}</p>
@@ -128,20 +106,16 @@ export function BookSpine({ book, index }: BookSpineProps) {
                 {"★".repeat(book.review.rating)}{"☆".repeat(5 - book.review.rating)}
               </p>
             )}
-            {book.status === "CURRENTLY_READING" && (
-              <p className="book-spine__tooltip-cta">Click to update progress</p>
-            )}
+            <p className="book-spine__tooltip-cta">Click to open</p>
           </div>
         )}
       </div>
 
-      {showProgress && (
-        <ProgressModal
-          book={book}
-          isOpen={showProgress}
-          onClose={() => setShowProgress(false)}
-        />
-      )}
+      <BookDetailModal
+        book={book}
+        isOpen={showDetail}
+        onClose={() => setShowDetail(false)}
+      />
     </>
   );
 }
