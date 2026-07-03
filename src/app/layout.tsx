@@ -4,7 +4,7 @@ import { type Metadata } from "next";
 import { Archivo_Black, DM_Sans, Lora } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import { auth } from "~/server/auth";
-import { AppNav } from "../components/nav/AppNav";
+import { AppNav } from "../components/nav/Appnav";
 
 export const metadata: Metadata = {
   title: "Bookshelf — Your Reading Life",
