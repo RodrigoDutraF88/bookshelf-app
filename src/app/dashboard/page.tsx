@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
-//import { DashboardView } from "~/components/dashboard/DashboardView";
+import { DashboardView } from "~/components/dashboard/DashboardView";
 
 export const metadata: Metadata = {
   title: "Dashboard — Bookshelf",
@@ -21,7 +21,7 @@ export default async function DashboardPage() {
       }}
     >
       <div style={{ maxWidth: "900px", margin: "0 auto", width: "100%" }}>
-        {/* <DashboardView /> */}
+        <DashboardView />
       </div>
     </main>
   );
