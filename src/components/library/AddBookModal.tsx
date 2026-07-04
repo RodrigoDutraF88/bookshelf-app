@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BookStatus } from "../../../generated/prisma";
+import type { BookStatus } from "../../../generated/prisma";
 import { api } from "~/trpc/react";
 
 type Props = {

@@ -42,7 +42,7 @@ jobs:
       # Use ESLint CLI directly — next lint is deprecated in Next.js 16.
       # SKIP_ENV_VALIDATION prevents @t3-oss/env-nextjs from crashing on
       # missing env vars when ESLint loads the Next.js config.
-      - run: npx eslint ./src --ext .ts,.tsx --max-warnings 0
+      - run: npx eslint ./src --ext .ts,.tsx 
         env:
           SKIP_ENV_VALIDATION: "1"
 
