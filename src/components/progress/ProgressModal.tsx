@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { api } from "~/trpc/react";
 import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
-
+import Image from "next/image";
 
 
 type BookWithRelations = Book & {
@@ -126,10 +126,13 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
         <div className="progress-modal__header">
           <div className="progress-modal__book-info">
             {book.coverImage ? (
-              <img
+              <Image
                 src={book.coverImage}
                 alt={`Cover of ${book.title}`}
+                width={48}
+                height={64}
                 className="progress-modal__cover"
+                style={{ objectFit: "cover" }}
               />
             ) : (
               <div className="progress-modal__cover-placeholder">

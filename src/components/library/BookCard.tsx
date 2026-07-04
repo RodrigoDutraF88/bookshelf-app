@@ -154,7 +154,7 @@ export function BookCard({ book, onDeleted }: Props) {
               className="text-[11px] leading-snug line-clamp-2 italic"
               style={{ color: "var(--color-text-muted)" }}
             >
-              "{book.review.body}"
+              {'"'}{book.review.body}{'"'}
             </p>
           )}
         </div>

@@ -474,7 +474,7 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
                     overflow:    "hidden",
                   }}
                 >
-                  "{book.review.body}"
+                  {'"'}{book.review.body}{'"'}
                 </p>
               </div>
             )}

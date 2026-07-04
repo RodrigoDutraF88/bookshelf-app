@@ -56,10 +56,10 @@ export function ReviewCard({ book }: { book: BookWithRelations }) {
           transition: "box-shadow 150ms ease",
         }}
         onMouseEnter={(e) =>
-          ((e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-md)")
+          (e.currentTarget.style.boxShadow = "var(--shadow-md)")
         }
         onMouseLeave={(e) =>
-          ((e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-sm)")
+          (e.currentTarget.style.boxShadow = "var(--shadow-sm)")
         }
       >
         {/* Cover thumbnail */}
@@ -218,7 +218,7 @@ export function ReviewCard({ book }: { book: BookWithRelations }) {
                   WebkitBoxOrient: "vertical",
                 }}
               >
-                "{body}"
+                {'"'}{body}{'"'}
               </p>
               {body.length > 180 && (
                 <button
