@@ -39,7 +39,7 @@ const ALT_COLORS = [
   "var(--spine-alt-6)",
 ];
 
-export function BookSpine({ book, index }: BookSpineProps) {
+export function BookSpine({ book }: BookSpineProps) {
   const [hovered, setHovered]         = useState(false);
   const [showDetail, setShowDetail]   = useState(false);
 
