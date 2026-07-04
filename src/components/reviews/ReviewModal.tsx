@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { api } from "~/trpc/react";
 import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
 import { InteractiveStarRating } from "./InteractiveStarRating";
-
+import Image from "next/image";
 
 type BookWithRelations = Book & {
   readingProgress: ReadingProgress | null;
@@ -87,10 +87,13 @@ export function ReviewModal({ book, isOpen, onClose }: ReviewModalProps) {
         <div className="review-modal__header">
           <div className="review-modal__book-info">
             {book.coverImage ? (
-              <img
+              <Image
                 src={book.coverImage}
                 alt={`Cover of ${book.title}`}
+                width={48}
+                height={64}
                 className="review-modal__cover"
+                style={{ objectFit: "cover" }}
               />
             ) : (
               <div className="review-modal__cover-placeholder">
