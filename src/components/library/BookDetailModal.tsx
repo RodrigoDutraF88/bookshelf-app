@@ -7,6 +7,7 @@ import type { Book, ReadingProgress, Review } from "../../../generated/prisma";
 import { ProgressModal } from "~/components/progress/ProgressModal";
 import { ReviewModal } from "~/components/reviews/ReviewModal";
 import { api } from "~/trpc/react";
+import { EditBookModal } from "~/components/library/EditBookModal";
 
 type BookWithRelations = Book & {
   readingProgress: ReadingProgress | null;
@@ -32,6 +33,8 @@ const STATUS_COLORS: Record<string, string> = {
   COMPLETED:         "#4A7C59",
   DROPPED:           "#8B6340",
 };
+
+const [showEdit, setShowEdit] = useState(false);
 
 export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps) {
   const [showProgress, setShowProgress]     = useState(false);
@@ -435,7 +438,7 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
                 label="Edit book details"
                 sub="Title, author, cover, genres"
                 color="#6B8FA8"
-                onClick={() => { /* wire AddBookModal edit mode */ }}
+                onClick={() => setShowEdit(true)}
               />
 
               <div style={{ borderTop: "1px dashed rgba(139,99,64,0.2)", margin: "4px 0" }} />
@@ -503,6 +506,13 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
       )}
       {showReview && (
         <ReviewModal book={book} isOpen={showReview} onClose={() => setShowReview(false)} />
+      )}
+      {showEdit && (
+        <EditBookModal
+          book={book}
+          isOpen={showEdit}
+          onClose={() => setShowEdit(false)}
+        />
       )}
     </>
   );
