@@ -34,7 +34,7 @@ const STATUS_COLORS: Record<string, string> = {
   DROPPED:           "#8B6340",
 };
 
-const [showEdit, setShowEdit] = useState(false);
+
 
 export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps) {
   const [showProgress, setShowProgress]     = useState(false);
@@ -43,6 +43,7 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
   const [mounted, setMounted]               = useState(false);
   const [portalEl, setPortalEl]             = useState<Element | null>(null);
   const backdropRef                         = useRef<HTMLDivElement>(null);
+  const [showEdit, setShowEdit] = useState(false);
 
   const utils      = api.useUtils();
   const deleteBook = api.book.delete.useMutation({
