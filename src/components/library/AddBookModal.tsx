@@ -72,7 +72,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
 
   
   const runSearch = useCallback(async (q: string) => {
-    if (!q.trim()) { setResults([]); return; }
+    if (!q.trim() || q.trim().length < 3) { setResults([]); return; } 
     setSearching(true);
     setSearchErr(false);
     try {
@@ -87,7 +87,7 @@ export function AddBookModal({ isOpen, onClose }: Props) {
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => { void runSearch(query); }, 400);
+    debounceRef.current = setTimeout(() => { void runSearch(query); }, 600);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [query, runSearch]);
 

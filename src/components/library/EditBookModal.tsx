@@ -93,13 +93,13 @@ export function EditBookModal({ book, isOpen, onClose }: Props) {
     if (tab !== "search") return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      if (!query.trim()) { setResults([]); return; }
+      if (!query.trim() || query.trim().length < 3) { setResults([]); return; }
       setSearching(true); setSearchErr(false);
       void searchGoogleBooks(query)
         .then((data) => setResults(data))
         .catch(() => setSearchErr(true))
         .finally(() => setSearching(false));
-    }, 400);
+    }, 600);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [query, tab]);
 
