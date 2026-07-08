@@ -62,6 +62,7 @@ export function EditBookModal({ book, isOpen, onClose }: Props) {
     setIsbn(book.isbn ?? "");
     setStatus(book.status);
     setCoverPreviewError(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book.id]); 
 
   const updateBook = api.book.update.useMutation({
@@ -91,16 +92,13 @@ export function EditBookModal({ book, isOpen, onClose }: Props) {
   useEffect(() => {
     if (tab !== "search") return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(async () => {
+    debounceRef.current = setTimeout(() => {
       if (!query.trim()) { setResults([]); return; }
       setSearching(true); setSearchErr(false);
-      try {
-        setResults(await searchGoogleBooks(query));
-      } catch {
-        setSearchErr(true);
-      } finally {
-        setSearching(false);
-      }
+      void searchGoogleBooks(query)
+        .then((data) => setResults(data))
+        .catch(() => setSearchErr(true))
+        .finally(() => setSearching(false));
     }, 400);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [query, tab]);
