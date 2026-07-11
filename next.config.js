@@ -17,6 +17,11 @@ const config = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "books.google.com",
+        pathname: "/books/content/**",
+      },
     ],
   },
 };

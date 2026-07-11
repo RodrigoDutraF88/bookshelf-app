@@ -60,12 +60,13 @@ function extractCover(item: GoogleBooksItem): string | null {
 export async function searchGoogleBooks(query: string): Promise<GoogleBookResult[]> {
   if (!query.trim()) return [];
 
-  const params = new URLSearchParams({
-    q:           query.trim(),
-    maxResults:  "10",
-    printType:   "books",
-    langRestrict: "en",
-  });
+const params = new URLSearchParams({
+  q:           query.trim(),
+  maxResults:  "10",
+  printType:   "books",
+  langRestrict: "en",
+  key:         process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY ?? "",
+});
 
   // Plain fetch — no Next.js server options, this runs in the browser
   const res = await fetch(
