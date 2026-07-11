@@ -5,6 +5,7 @@ import { api } from "~/trpc/react";
 import { StatCard } from "./StatCard";
 import { GenreChart } from "./GenreChart";
 import { ActivityChart } from "./ActivityChart";
+import { RecommendationsCard } from "./RecommendationsCard";
 
 export function DashboardView() {
   const { data: stats, isLoading, isError } = api.book.getStats.useQuery();
@@ -116,7 +117,7 @@ export function DashboardView() {
         <GenreChart    data={stats?.genreDistribution ?? []} isLoading={isLoading} />
       </div>
 
-      {/* ── Recently completed ── */}
+    
       {(isLoading || (stats?.recentlyCompleted.length ?? 0) > 0) && (
         <div
           style={{
@@ -127,6 +128,7 @@ export function DashboardView() {
             boxShadow:       "var(--shadow-sm)",
           }}
         >
+          
           <h3
             style={{
               fontFamily:   "var(--font-display)",
@@ -171,7 +173,7 @@ export function DashboardView() {
                         : "none",
                     }}
                   >
-                    {/* Cover thumbnail */}
+        
                     <div
                       style={{
                         width:           36,
@@ -209,7 +211,7 @@ export function DashboardView() {
                       )}
                     </div>
 
-                    {/* Info */}
+         
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p
                         style={{
@@ -227,8 +229,9 @@ export function DashboardView() {
                         {book.author}
                       </p>
                     </div>
+                    
 
-                    {/* Right side: rating + date */}
+                  
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "3px", flexShrink: 0 }}>
                       {book.rating && (
                         <div style={{ display: "flex", gap: "1px" }}>
@@ -242,10 +245,15 @@ export function DashboardView() {
                       </span>
                     </div>
                   </div>
+                  
+                  
                 ))}
+                
           </div>
         </div>
       )}
+
+      <RecommendationsCard />
 
       <style>{`
         @keyframes pulse {
