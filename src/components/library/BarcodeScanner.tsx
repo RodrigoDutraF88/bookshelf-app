@@ -1,54 +1,53 @@
 "use client";
 
-
-
 import { useEffect, useRef, useState } from "react";
 
 interface BarcodeScannerProps {
-  onScan:  (isbn: string) => void;   
-  onClose: () => void;              
+  onScan:  (isbn: string) => void;
+  onClose: () => void;
 }
 
 type ScanState = "requesting" | "scanning" | "error";
 
 const ERROR_MESSAGES: Record<string, string> = {
-  NotAllowedError:  "Camera permission denied. Allow camera access and try again.",
-  NotFoundError:    "No camera found on this device.",
+  NotAllowedError:   "Camera permission denied. Allow camera access and try again.",
+  NotFoundError:     "No camera found on this device.",
   NotSupportedError: "Camera not supported in this browser. Try Chrome or Safari.",
-  NotReadableError: "Camera is in use by another app.",
+  NotReadableError:  "Camera is in use by another app.",
 };
 
 export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
-  const videoRef                      = useRef<HTMLVideoElement>(null);
-  const [state, setState]             = useState<ScanState>("requesting");
-  const [errorMsg, setErrorMsg]       = useState<string>("");
-  const readerRef                     = useRef<{ reset: () => void } | null>(null);
-  const hasScannedRef                 = useRef(false);
+  const videoRef        = useRef<HTMLVideoElement>(null);
+  const [state, setState]       = useState<ScanState>("requesting");
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  
+  const stopRef         = useRef<(() => void) | null>(null);
+  const hasScannedRef   = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function startScanner() {
       try {
-      
-        const { BrowserMultiFormatReader, NotFoundException } = await import("@zxing/browser");
+        
+        const { BrowserMultiFormatReader } = await import("@zxing/browser");
+        
+        const { NotFoundException } = await import("@zxing/library");
 
         if (cancelled || !videoRef.current) return;
 
         const reader = new BrowserMultiFormatReader();
-        readerRef.current = reader;
-
         setState("scanning");
 
-        await reader.decodeFromVideoDevice(
-          undefined,         
+        
+        const controls = await reader.decodeFromVideoDevice(
+          undefined,        // use default camera
           videoRef.current,
           (result, err) => {
             if (cancelled || hasScannedRef.current) return;
 
             if (result) {
               const text = result.getText();
-             
               const isIsbn13 = /^97[89]\d{10}$/.test(text);
               const isIsbn10 = /^\d{9}[\dX]$/.test(text);
               if (isIsbn13 || isIsbn10) {
@@ -57,18 +56,22 @@ export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
               }
             }
 
-            
+           
             if (err && !(err instanceof NotFoundException)) {
               console.warn("[BarcodeScanner]", err);
             }
           },
         );
+
+        
+        stopRef.current = () => controls.stop();
+
       } catch (err) {
         if (cancelled) return;
         const name = err instanceof Error ? err.name : "UnknownError";
         setErrorMsg(
           ERROR_MESSAGES[name] ??
-          "Could not access camera. Make sure you're on HTTPS.",
+          "Could not access camera. Make sure you are on HTTPS.",
         );
         setState("error");
       }
@@ -78,7 +81,7 @@ export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
 
     return () => {
       cancelled = true;
-      try { readerRef.current?.reset(); } catch { /* already stopped */ }
+      try { stopRef.current?.(); } catch { /* already stopped */ }
     };
   }, [onScan]);
 
@@ -100,7 +103,7 @@ export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
       aria-modal="true"
       aria-label="ISBN barcode scanner"
     >
-     
+      
       <button
         onClick={onClose}
         style={{
@@ -125,7 +128,7 @@ export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
         ✕
       </button>
 
-     
+      
       <div style={{ textAlign: "center" }}>
         <p style={{ fontFamily: "var(--font-display)", fontSize: "18px", color: "#fff", marginBottom: "4px" }}>
           Scan a barcode
@@ -135,46 +138,39 @@ export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
         </p>
       </div>
 
-     
+      
       <div
         style={{
-          position:     "relative",
-          width:        "100%",
-          maxWidth:     "360px",
-          aspectRatio:  "4/3",
-          borderRadius: "var(--radius-lg)",
-          overflow:     "hidden",
+          position:        "relative",
+          width:           "100%",
+          maxWidth:        "360px",
+          aspectRatio:     "4/3",
+          borderRadius:    "var(--radius-lg)",
+          overflow:        "hidden",
           backgroundColor: "#000",
-          border:       "2px solid rgba(200,135,58,0.6)",
-          boxShadow:    "0 0 0 1px rgba(200,135,58,0.2), 0 20px 60px rgba(0,0,0,0.5)",
+          border:          "2px solid rgba(200,135,58,0.6)",
+          boxShadow:       "0 0 0 1px rgba(200,135,58,0.2), 0 20px 60px rgba(0,0,0,0.5)",
         }}
       >
         <video
           ref={videoRef}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
           muted
-          playsInline    
+          playsInline
           autoPlay
         />
 
-       
+        
         {state === "scanning" && (
           <>
-           
             {[
-              { top: 12, left: 12, borderTop: "3px solid var(--color-accent)", borderLeft: "3px solid var(--color-accent)" },
-              { top: 12, right: 12, borderTop: "3px solid var(--color-accent)", borderRight: "3px solid var(--color-accent)" },
-              { bottom: 12, left: 12, borderBottom: "3px solid var(--color-accent)", borderLeft: "3px solid var(--color-accent)" },
-              { bottom: 12, right: 12, borderBottom: "3px solid var(--color-accent)", borderRight: "3px solid var(--color-accent)" },
-            ].map((style, i) => (
-              <div
-                key={i}
-                aria-hidden="true"
-                style={{ position: "absolute", width: 24, height: 24, borderRadius: 2, ...style }}
-              />
+              { top: 12,    left:  12,  borderTop:    "3px solid var(--color-accent)", borderLeft:   "3px solid var(--color-accent)" },
+              { top: 12,    right: 12,  borderTop:    "3px solid var(--color-accent)", borderRight:  "3px solid var(--color-accent)" },
+              { bottom: 12, left:  12,  borderBottom: "3px solid var(--color-accent)", borderLeft:   "3px solid var(--color-accent)" },
+              { bottom: 12, right: 12,  borderBottom: "3px solid var(--color-accent)", borderRight:  "3px solid var(--color-accent)" },
+            ].map((s, i) => (
+              <div key={i} aria-hidden="true" style={{ position: "absolute", width: 24, height: 24, borderRadius: 2, ...s }} />
             ))}
-
-            
             <div
               aria-hidden="true"
               style={{
@@ -190,7 +186,7 @@ export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
           </>
         )}
 
-       
+        
         {state === "requesting" && (
           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.7)" }}>
             <p style={{ color: "#fff", fontSize: "14px" }}>Requesting camera…</p>
@@ -198,19 +194,9 @@ export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
         )}
       </div>
 
-      
+      {/* Error */}
       {state === "error" && (
-        <div
-          style={{
-            backgroundColor: "rgba(184,84,80,0.2)",
-            border:          "1px solid rgba(184,84,80,0.5)",
-            borderRadius:    "var(--radius-md)",
-            padding:         "14px 18px",
-            maxWidth:        "360px",
-            width:           "100%",
-            textAlign:       "center",
-          }}
-        >
+        <div style={{ backgroundColor: "rgba(184,84,80,0.2)", border: "1px solid rgba(184,84,80,0.5)", borderRadius: "var(--radius-md)", padding: "14px 18px", maxWidth: "360px", width: "100%", textAlign: "center" }}>
           <p style={{ color: "#f87171", fontSize: "14px", lineHeight: 1.5 }}>{errorMsg}</p>
         </div>
       )}
