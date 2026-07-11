@@ -25,6 +25,8 @@ jobs:
           AUTH_SECRET: "ci-dummy-secret-32-characters-ok"
           AUTH_DISCORD_ID: "dummy"
           AUTH_DISCORD_SECRET: "dummy"
+          AUTH_GOOGLE_ID: "dummy"
+          AUTH_GOOGLE_SECRET: "dummy"
           NEXTAUTH_URL: "http://localhost:3000"
           NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY: "dummy"
 
@@ -67,6 +69,8 @@ jobs:
           AUTH_SECRET: "ci-dummy-secret-32-characters-ok"
           AUTH_DISCORD_ID: "dummy"
           AUTH_DISCORD_SECRET: "dummy"
+          AUTH_GOOGLE_ID: "dummy"
+          AUTH_GOOGLE_SECRET: "dummy"
           NEXTAUTH_URL: "http://localhost:3000"
           NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY: "dummy"
 
@@ -90,5 +94,7 @@ jobs:
           AUTH_SECRET: "ci-dummy-secret-32-characters-ok"
           AUTH_DISCORD_ID: "dummy"
           AUTH_DISCORD_SECRET: "dummy"
+          AUTH_GOOGLE_ID: "dummy"
+          AUTH_GOOGLE_SECRET: "dummy"
           NEXTAUTH_URL: "http://localhost:3000"
           NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY: "dummy"
