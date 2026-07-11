@@ -1,26 +1,16 @@
+// src/server/api/root.ts — add aiRouter
 import { createCallerFactory, createTRPCRouter } from "../api/trpc";
-import { bookRouter } from "./routers/book";
+import { bookRouter }     from "./routers/book";
 import { progressRouter } from "./routers/progress";
-import { reviewRouter } from "./routers/review";
-/**
- * This is the primary router for your server.
- *
- * All routers added in /api/routers should be manually added here.
- */
+import { reviewRouter }   from "./routers/review";
+import { aiRouter }       from "./routers/ai";
+
 export const appRouter = createTRPCRouter({
-    book: bookRouter,//The namespace book here is what makes trpc.book.getAll work on the client
-    progress: progressRouter,
-    review: reviewRouter,
+  book:     bookRouter,
+  progress: progressRouter,
+  review:   reviewRouter,
+  ai:       aiRouter,     
 });
 
-// export type definition of API
 export type AppRouter = typeof appRouter;
-
-/**
- * Create a server-side caller for the tRPC API.
- * @example
- * const trpc = createCaller(createContext);
- * const res = await trpc.post.all();
- *       ^? Post[]
- */
 export const createCaller = createCallerFactory(appRouter);

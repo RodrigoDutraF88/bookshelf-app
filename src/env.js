@@ -9,10 +9,9 @@ export const env = createEnv({
         : z.string().optional(),
     AUTH_DISCORD_ID:     z.string(),
     AUTH_DISCORD_SECRET: z.string(),
-    // Google OAuth — optional so existing deployments without Google
-    // credentials don't break. Once added to Vercel, remove .optional().
     AUTH_GOOGLE_ID:      z.string().optional(),
     AUTH_GOOGLE_SECRET:  z.string().optional(),
+    GEMINI_API_KEY:      z.string().optional(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -25,9 +24,10 @@ export const env = createEnv({
     AUTH_DISCORD_SECRET: process.env.AUTH_DISCORD_SECRET,
     AUTH_GOOGLE_ID:      process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET:  process.env.AUTH_GOOGLE_SECRET,
+    GEMINI_API_KEY:      process.env.GEMINI_API_KEY,
     DATABASE_URL:        process.env.DATABASE_URL,
     NODE_ENV:            process.env.NODE_ENV,
   },
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  skipValidation:         !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
 });
