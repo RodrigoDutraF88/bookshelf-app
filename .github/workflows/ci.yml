@@ -29,6 +29,7 @@ jobs:
           AUTH_GOOGLE_SECRET: "dummy"
           NEXTAUTH_URL: "http://localhost:3000"
           NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY: "dummy"
+          GEMINI_API_KEY: "dummy"
 
   lint:
     name: ESLint
@@ -73,6 +74,7 @@ jobs:
           AUTH_GOOGLE_SECRET: "dummy"
           NEXTAUTH_URL: "http://localhost:3000"
           NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY: "dummy"
+          GEMINI_API_KEY: "dummy"
 
   build:
     name: Build
@@ -98,3 +100,4 @@ jobs:
           AUTH_GOOGLE_SECRET: "dummy"
           NEXTAUTH_URL: "http://localhost:3000"
           NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY: "dummy"
+          GEMINI_API_KEY: "dummy"
