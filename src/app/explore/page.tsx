@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
-import { LibraryView } from "~/components/library/LibraryView";
+import { ExploreView } from "~/components/explore/ExploreView";
 
 export const metadata: Metadata = {
-  title: "My Library — Bookshelf",
-  description: "Your personal reading collection",
+  title: "Explore Books — Bookshelf",
+  description: "Search and discover books to add to your library",
 };
 
-export default async function LibraryPage() {
+export default async function ExplorePage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-
   return (
     <main style={{ minHeight: "100dvh", backgroundColor: "var(--color-bg)" }}>
-      <LibraryView />
+      <ExploreView />
     </main>
   );
 }
