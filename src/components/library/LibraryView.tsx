@@ -88,7 +88,7 @@ export function LibraryView() {
 
           
           <button
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/dashboard#ai-recommendations")}
             title="AI book recommendations"
             style={{
               width:           "96px",

@@ -252,8 +252,11 @@ export function DashboardView() {
           </div>
         </div>
       )}
+      <div id="ai-recommendations">
+        <RecommendationsCard />
 
-      <RecommendationsCard />
+      </div>
+      
 
       <style>{`
         @keyframes pulse {
