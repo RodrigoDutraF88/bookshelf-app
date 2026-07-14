@@ -10,22 +10,22 @@ type BookWithRelations = Book & {
   review: Review | null;
 };
 
-type ViewMode    = "shelf" | "grid";
+type ViewMode     = "shelf" | "grid";
 type OrganiseMode = "all" | "category";
 
 const BOOKS_PER_SHELF = 12;
 
 const CATEGORY_CONFIG: { status: Book["status"]; label: string; color: string }[] = [
-  { status: "CURRENTLY_READING", label: "Currently Reading", color: "var(--spine-reading)" },
-  { status: "WANT_TO_READ",      label: "Want to Read",      color: "var(--spine-want)" },
+  { status: "CURRENTLY_READING", label: "Currently Reading", color: "var(--spine-reading)"   },
+  { status: "WANT_TO_READ",      label: "Want to Read",      color: "var(--spine-want)"      },
   { status: "COMPLETED",         label: "Completed",         color: "var(--spine-completed)" },
-  { status: "DROPPED",           label: "Dropped",           color: "var(--spine-dropped)" },
+  { status: "DROPPED",           label: "Dropped",           color: "var(--spine-dropped)"   },
 ];
 
 interface BookshelfViewProps {
-  books:       BookWithRelations[];
-  onAddBook?:  () => void;
-  organise:    OrganiseMode;
+  books:      BookWithRelations[];
+  onAddBook?: () => void;
+  organise:   OrganiseMode;
 }
 
 export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps) {
@@ -51,7 +51,6 @@ export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps
         <span className="bookshelf-view__count">
           {books.length} {books.length === 1 ? "book" : "books"}
         </span>
-
         <div className="bookshelf-view__toggle" role="group" aria-label="View mode">
           <button
             onClick={() => setViewMode("shelf")}
@@ -72,10 +71,10 @@ export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps
         </div>
       </div>
 
-
+  
       {organise === "all" && (
         viewMode === "shelf" ? (
-          <ShelfRows books={books} />
+          <ShelfScene books={books} withPlants />
         ) : (
           <div className="bookshelf-view__grid">
             {books.map((book) => <BookCard key={book.id} book={book} />)}
@@ -83,78 +82,31 @@ export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps
         )
       )}
 
- 
+  
       {organise === "category" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "24px", paddingTop: "8px" }}>
           {CATEGORY_CONFIG.map(({ status, label, color }) => {
-            const categoryBooks = books.filter((b) => b.status === status);
+            const catBooks = books.filter((b) => b.status === status);
             return (
               <div key={status}>
-           
-                <div
-                  style={{
-                    display:      "flex",
-                    alignItems:   "center",
-                    gap:          "8px",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width:           "10px",
-                      height:          "10px",
-                      borderRadius:    "50%",
-                      backgroundColor: color,
-                      flexShrink:      0,
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize:      "12px",
-                      fontWeight:    700,
-                      fontFamily:    "var(--font-body)",
-                      color:         "var(--color-text-secondary)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.07em",
-                    }}
-                  >
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: color, flexShrink: 0 }} />
+                  <span style={{ fontSize: "12px", fontWeight: 700, fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.07em" }}>
                     {label}
                   </span>
-                  <span
-                    style={{
-                      fontSize:        "11px",
-                      color:           "var(--color-text-muted)",
-                      backgroundColor: "var(--color-surface)",
-                      border:          "1px solid var(--color-border)",
-                      borderRadius:    "var(--radius-pill)",
-                      padding:         "1px 7px",
-                    }}
-                  >
-                    {categoryBooks.length}
+                  <span style={{ fontSize: "11px", color: "var(--color-text-muted)", backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-pill)", padding: "1px 7px" }}>
+                    {catBooks.length}
                   </span>
                 </div>
-
-     
-                {categoryBooks.length === 0 ? (
-                  <div
-                    style={{
-                      height:          "80px",
-                      border:          "1.5px dashed var(--color-border)",
-                      borderRadius:    "var(--radius-md)",
-                      display:         "flex",
-                      alignItems:      "center",
-                      justifyContent:  "center",
-                    }}
-                  >
-                    <p style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>
-                      No books here yet
-                    </p>
+                {catBooks.length === 0 ? (
+                  <div style={{ height: 80, border: "1.5px dashed var(--color-border)", borderRadius: "var(--radius-md)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <p style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>No books here yet</p>
                   </div>
                 ) : viewMode === "shelf" ? (
-                  <ShelfRows books={categoryBooks} compact />
+                  <ShelfScene books={catBooks} />
                 ) : (
                   <div className="bookshelf-view__grid">
-                    {categoryBooks.map((book) => <BookCard key={book.id} book={book} />)}
+                    {catBooks.map((book) => <BookCard key={book.id} book={book} />)}
                   </div>
                 )}
               </div>
@@ -167,35 +119,42 @@ export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps
 }
 
 
-function ShelfRows({ books, compact = false }: { books: BookWithRelations[]; compact?: boolean }) {
+function ShelfScene({ books, withPlants = false }: { books: BookWithRelations[]; withPlants?: boolean }) {
   const shelves: BookWithRelations[][] = [];
   for (let i = 0; i < books.length; i += BOOKS_PER_SHELF) {
     shelves.push(books.slice(i, i + BOOKS_PER_SHELF));
   }
 
   return (
-    <div className="bookshelf-view__shelves">
-      {shelves.map((row, rowIdx) => (
-        <div
-          key={rowIdx}
-          className="shelf-row"
-          style={compact ? { marginBottom: "4px" } : undefined}
-        >
-          <div className="shelf-row__books">
-            {row.map((book, bookIdx) => (
-              <BookSpine
-                key={book.id}
-                book={book}
-                index={rowIdx * BOOKS_PER_SHELF + bookIdx}
-              />
-            ))}
+    <div style={{ position: "relative" }}>
+ 
+
+     
+      <div className="bookshelf-view__shelves">
+        {shelves.map((row, rowIdx) => (
+          <div key={rowIdx} className="shelf-row">
+            <div className="shelf-row__books">
+              {row.map((book, bookIdx) => (
+                <BookSpine
+                  key={book.id}
+                  book={book}
+                  index={rowIdx * BOOKS_PER_SHELF + bookIdx}
+                />
+              ))}
+            </div>
+            <div className="shelf-row__ledge" aria-hidden="true" />
           </div>
-          <div className="shelf-row__ledge" aria-hidden="true" />
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
+
+
+
+
+
+
 
 
 function ShelfIcon() {
