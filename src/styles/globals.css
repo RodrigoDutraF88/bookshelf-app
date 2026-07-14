@@ -141,69 +141,116 @@ h1, h2, h3 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
- 
 
   width: var(--spine-width, 55px);
   height: var(--spine-height, 190px);
- 
-  border-radius: 5px 6px 6px 4px;
-  background-color: var(--spine-color, var(--spine-want));
+
+  border-radius: 2px 5px 5px 2px;
   cursor: pointer;
   overflow: hidden;
   flex-shrink: 0;
- 
 
   transform: rotate(var(--spine-tilt, 0deg));
   transform-origin: bottom center;
- 
-  box-shadow: var(--shadow-spine);
+
   transition:
     transform var(--transition-spring),
-    box-shadow var(--transition-base);
+    box-shadow var(--transition-base),
+    filter var(--transition-base);
+
   outline: none;
- 
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(
-      to right,
-      rgba(255,255,255,0.5),
-      rgba(255,255,255,0.1)
-    );
-    border-radius: 3px 5px 0 0;
-  }
- 
 
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 4px;
-    background: linear-gradient(
+  background:
+
+    linear-gradient(
       to right,
-      transparent,
-      rgba(0,0,0,0.18)
+      color-mix(in srgb, var(--spine-color) 45%, #000) 0px,
+      color-mix(in srgb, var(--spine-color) 60%, #000) 4px,
+      transparent 7px
+    ),
+  
+    linear-gradient(
+      to left,
+      rgba(0,0,0,0.22) 0px,
+      transparent 5px
+    ),
+   
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.38) 0px,
+      rgba(255,255,255,0.10) 3px,
+      transparent 10px
+    ),
+   
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--spine-color) 88%, #fff) 0%,
+      var(--spine-color)                                 40%,
+      color-mix(in srgb, var(--spine-color) 88%, #000)  100%
     );
-  }
+
+
+  box-shadow:
+    var(--shadow-spine),
+    -3px 4px 10px rgba(0,0,0,0.22),
+     3px 0   6px  rgba(0,0,0,0.12);
 }
+
+
+.book-spine::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 7px;  
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0.55),
+    rgba(255,255,255,0.15)
+  );
+  border-radius: 0 3px 0 0;
+}
+
+
+.book-spine::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 7px;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    rgba(245,235,220,0.75) 0%,
+    rgba(245,235,220,0.35) 60%,
+    rgba(245,235,220,0.10) 100%
+  );
+  border-radius: 0 0 3px 0;
+}
+
+
+.book-spine--hovered {
+  transform: rotate(var(--spine-tilt, 0deg)) translateY(-16px) scale(1.05);
+  z-index: 8;
+  filter: brightness(1.06);
+
+ 
+  box-shadow:
+    var(--shadow-spine-hover),
+    -5px 12px 20px rgba(0,0,0,0.32),
+     4px  2px  8px rgba(0,0,0,0.16);
+}
+
+
  
 .book-spine:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
  
-.book-spine--hovered {
-  transform: rotate(var(--spine-tilt, 0deg)) translateY(-16px) scale(1.04);
-  box-shadow: var(--shadow-spine-hover);
-  z-index: 10;
-}
+
  
 
 .book-spine__strip {
