@@ -378,6 +378,7 @@ h1, h2, h3 {
  
 .shelf-row__books {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   align-items: flex-end;
   gap: 5px;
