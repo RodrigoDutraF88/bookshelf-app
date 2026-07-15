@@ -171,8 +171,18 @@ export function LibraryView() {
         )}
       </div>
 
-      {/* ── Add book FAB ── */}
-      <div style={{ textAlign: "center", padding: "24px 16px 16px", backgroundColor: "var(--color-bg)" }}>
+
+<div style={{
+  position:        "fixed",
+  bottom:          "72px",
+  left:            "50%",
+  transform:       "translateX(-50%)",
+  zIndex:          30,
+  textAlign:       "center",
+  display:         "flex",
+  flexDirection:   "column",
+  alignItems:      "center",
+}}>
         <button
           onClick={() => setIsAddModalOpen(true)}
           aria-label="Add a book"
