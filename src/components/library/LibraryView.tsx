@@ -93,28 +93,46 @@ export function LibraryView() {
             onClick={() => router.push("/dashboard#ai-recommendations")}
             title="AI book recommendations"
             style={{
-              width: "72px", height: "72px", borderRadius: "50%",
-              backgroundColor: "rgba(255,255,255,0.18)",
-              border: "2px solid rgba(255,255,255,0.35)",
-              backdropFilter: "blur(8px)",
-              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              gap: "3px", cursor: "pointer", flexShrink: 0, transition: "all 200ms ease",
+              width:           "72px",
+              height:          "72px",
+              borderRadius:    "50%",
+              background:      "rgba(255,255,255,0.15)",
+              border:          "1.5px solid rgba(255,255,255,0.45)",
+              backdropFilter:  "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              display:         "flex",
+              flexDirection:   "column",
+              alignItems:      "center",
+              justifyContent:  "center",
+              gap:             "4px",
+              cursor:          "pointer",
+              flexShrink:      0,
+              transition:      "all 220ms ease",
+              boxShadow:       "0 4px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.28)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.18)"; }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+              e.currentTarget.style.transform = "scale(1.06)";
+              e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)";
+            }}
           >
-            <StarIcon />
-            <span style={{ fontSize: "8px", color: "#fff", fontFamily: "var(--font-body)", fontWeight: 700, textAlign: "center", lineHeight: 1.2 }}>
-              AI recs
+            <GeminiIcon />
+            <span style={{ fontSize: "9px", color: "rgba(255,255,255,0.9)", fontFamily: "var(--font-body)", fontWeight: 700, letterSpacing: "0.05em" }}>
+              AI RECS
             </span>
           </button>
         </div>
       </div>
 
-      {/* ── Controls ── */}
+
       <div style={{ padding: "16px 16px 12px", backgroundColor: "var(--color-bg)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          {/* All / Per category toggle */}
+      
           <div
             style={{ display: "flex", backgroundColor: "var(--color-surface)", borderRadius: "var(--radius-pill)", padding: "3px", border: "1px solid var(--color-border)", flexShrink: 0 }}
             role="group"
@@ -151,14 +169,14 @@ export function LibraryView() {
             </button>
           </div>
 
-          {/* Search bar */}
+     
           <div style={{ flex: 1 }}>
             <SearchBar value={search} onChange={setSearch} />
           </div>
         </div>
       </div>
 
-      {/* ── Content ── */}
+   
       <div style={{ padding: "0 16px", backgroundColor: "var(--color-bg)", minHeight: "60vh" }}>
         {isError ? (
           <div className="flex flex-col items-center justify-center gap-3 py-20 text-center" role="alert">
@@ -218,13 +236,28 @@ export function LibraryView() {
     </>
   );
 }
-
-function StarIcon() {
-  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
-}
 function ListIcon() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
 }
 function PlusCircleIcon() {
   return <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>;
+}
+
+function GeminiIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    
+      <path
+        d="M16 2 C16 2 18 10 18 16 C18 22 16 30 16 30 C16 30 14 22 14 16 C14 10 16 2 16 2Z"
+        fill="white"
+      />
+     
+      <path
+        d="M2 16 C2 16 10 18 16 18 C22 18 30 16 30 16 C30 16 22 14 16 14 C10 14 2 16 2 16Z"
+        fill="white"
+      />
+  
+      <circle cx="16" cy="16" r="2" fill="white"/>
+    </svg>
+  );
 }
