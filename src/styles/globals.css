@@ -378,7 +378,9 @@ h1, h2, h3 {
  
 .shelf-row__books {
   display: flex;
-  flex-wrap: wrap;
+  overflow-x: auto;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE */
   flex-direction: row;
   align-items: flex-end;
   gap: 5px;
@@ -405,6 +407,10 @@ h1, h2, h3 {
       var(--wood-dark)     100%
     );
   border-radius: 3px 3px 0 0;
+}
+
+.shelf-row__books::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
  
 .shelf-row__ledge {
