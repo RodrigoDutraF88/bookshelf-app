@@ -31,7 +31,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           )}
 
           
-          <div className={session?.user ? "md:pt-0 pb-20 md:pb-0" : ""}>
+          <div className={session?.user ? "md:pt-[85px] pb-20 md:pb-0" : ""}>
             {children}
           </div>
 

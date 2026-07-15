@@ -47,7 +47,7 @@ export function AppNav({ user }: AppNavProps) {
     <>
       <header
         style={{
-          position: "sticky",
+          position: "fixed",
           top: 0,
           zIndex: 30,
           width: "100%",
