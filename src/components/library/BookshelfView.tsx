@@ -13,7 +13,7 @@ type BookWithRelations = Book & {
 type ViewMode     = "shelf" | "grid";
 type OrganiseMode = "all" | "category";
 
-const BOOKS_PER_SHELF = 12;
+
 
 const CATEGORY_CONFIG: { status: Book["status"]; label: string; color: string }[] = [
   { status: "CURRENTLY_READING", label: "Currently Reading", color: "var(--spine-reading)"   },
@@ -23,12 +23,14 @@ const CATEGORY_CONFIG: { status: Book["status"]; label: string; color: string }[
 ];
 
 interface BookshelfViewProps {
-  books:      BookWithRelations[];
-  onAddBook?: () => void;
-  organise:   OrganiseMode;
+  books:        BookWithRelations[];
+  onAddBook?:   () => void;
+  organise:     OrganiseMode;
+  booksPerShelf?: number; 
 }
 
-export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps) {
+
+export function BookshelfView({ books, onAddBook, organise, booksPerShelf = 22 }: BookshelfViewProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("shelf");
 
   if (books.length === 0) {
@@ -74,7 +76,7 @@ export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps
   
       {organise === "all" && (
         viewMode === "shelf" ? (
-          <ShelfScene books={books} withPlants />
+          <ShelfScene books={books} withPlants booksPerShelf={booksPerShelf} />
         ) : (
           <div className="bookshelf-view__grid">
             {books.map((book) => <BookCard key={book.id} book={book} />)}
@@ -103,7 +105,7 @@ export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps
                     <p style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>No books here yet</p>
                   </div>
                 ) : viewMode === "shelf" ? (
-                  <ShelfScene books={catBooks} />
+                  <ShelfScene books={catBooks} booksPerShelf={booksPerShelf} />
                 ) : (
                   <div className="bookshelf-view__grid">
                     {catBooks.map((book) => <BookCard key={book.id} book={book} />)}
@@ -119,10 +121,14 @@ export function BookshelfView({ books, onAddBook, organise }: BookshelfViewProps
 }
 
 
-function ShelfScene({ books, withPlants = false }: { books: BookWithRelations[]; withPlants?: boolean }) {
+function ShelfScene({ books, withPlants = false, booksPerShelf = 22 }: {
+  books: BookWithRelations[];
+  withPlants?: boolean;
+  booksPerShelf?: number;
+}) {
   const shelves: BookWithRelations[][] = [];
-  for (let i = 0; i < books.length; i += BOOKS_PER_SHELF) {
-    shelves.push(books.slice(i, i + BOOKS_PER_SHELF));
+  for (let i = 0; i < books.length; i += booksPerShelf) { 
+    shelves.push(books.slice(i, i + booksPerShelf));
   }
 
   return (
@@ -138,7 +144,7 @@ function ShelfScene({ books, withPlants = false }: { books: BookWithRelations[];
                 <BookSpine
                   key={book.id}
                   book={book}
-                  index={rowIdx * BOOKS_PER_SHELF + bookIdx}
+                  index={rowIdx * booksPerShelf + bookIdx}
                 />
               ))}
             </div>
