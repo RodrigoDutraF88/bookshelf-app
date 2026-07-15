@@ -8,6 +8,7 @@ import { SearchBar } from "./SearchBar";
 import { EmptyState } from "./EmptyState";
 import { AddBookModal } from "./AddBookModal";
 import { BookshelfView } from "./BookshelfView";
+import { useEffect } from "react";
 
 type OrganiseMode = "all" | "category";
 
@@ -41,14 +42,23 @@ export function LibraryView() {
   const { data: allBooks } = api.book.getAll.useQuery({});
   const totalBooks = allBooks?.length ?? 0;
 
-  // Books per shelf — fewer on mobile to avoid overflow
-  // window is not available on SSR so we check typeof window
-  const booksPerShelf =
-    typeof window !== "undefined" && window.innerWidth < 768 ? 5 : 12;
+
+  const [booksPerShelf, setBooksPerShelf] = useState(20);
+
+  useEffect(() => {
+    const update = () => {
+      setBooksPerShelf(window.innerWidth < 900 ? 5 : 20);
+    };
+
+    update();
+
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   return (
     <>
-      {/* ── Hero ── */}
+      
       <div
         style={{
           background: "linear-gradient(135deg, #E8A855 0%, #C8873A 100%)",
