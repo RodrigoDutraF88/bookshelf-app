@@ -63,8 +63,7 @@ export function ExploreView() {
       
       <div
         style={{
-          background:   "linear-gradient(135deg, #E8A855 0%, #C8873A 100%)",
-          padding:      "32px 20px 24px",
+          padding:      "32px 110px 24px",
           position:     "relative",
           overflow:     "hidden",
         }}
@@ -72,12 +71,10 @@ export function ExploreView() {
         <div aria-hidden="true" style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.08)" }} />
         <h1
           style={{
-            fontFamily:   "var(--font-display)",
-            fontSize:     "clamp(24px, 4vw, 32px)",
-            color:        "#fff",
-            lineHeight:   1.15,
-            marginBottom: "16px",
-            textShadow:   "0 2px 8px rgba(0,0,0,0.12)",
+            fontFamily: "var(--font-body)",
+            fontSize:   "36px",
+            color:      "var(--color-text-primary)",
+            marginBottom: "40px"
           }}
         >
           Explore Books
