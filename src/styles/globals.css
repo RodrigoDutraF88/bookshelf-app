@@ -59,8 +59,8 @@
   --spine-alt-5:           #4A5E7A;  
   --spine-alt-6:           #7A4A4A;  
 
-  --font-display:   "Archivo Black", sans-serif;
-  --font-body:      "DM Sans", system-ui, sans-serif;
+  --font-display: var(--font-geist);
+  --font-body: var(--font-geist);
   --font-serif:     "Lora", Georgia, serif;   
   --font-mono:      "JetBrains Mono", "Fira Code", monospace;
 
@@ -108,7 +108,7 @@ body {
   padding: 0;
   background-color: var(--color-bg);  
   color: var(--color-text-primary);
-  font-family:  "Archivo Black", system-ui, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -232,7 +232,7 @@ h1, h2, h3 {
 
 
 .book-spine--hovered {
-  transform: rotate(var(--spine-tilt, 0deg)) translateY(-16px) scale(1.05);
+  transform: rotate(var(--spine-tilt, 0deg)) translateY(-11px) scale(1.02);
   z-index: 8;
   filter: brightness(1.06);
 
@@ -379,13 +379,13 @@ h1, h2, h3 {
 .shelf-row__books {
   display: flex;
   overflow-x: auto;
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none; /* IE */
+  scrollbar-width: none;  
+  -ms-overflow-style: none; 
   flex-direction: row;
   align-items: flex-end;
   gap: 5px;
   padding: 16px 20px 0;
-  min-height: 230px;
+  min-height: 290px;
   perspective: 600px;
   background:
     repeating-linear-gradient(
