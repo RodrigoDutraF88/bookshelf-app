@@ -44,7 +44,7 @@ export function SearchBar({
       style={{
       
         width: "100%",
-        maxWidth: "360px",
+        maxWidth: "1300px",
       }}
     >
      

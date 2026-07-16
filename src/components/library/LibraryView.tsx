@@ -62,23 +62,21 @@ export function LibraryView() {
       <div
         style={{
           background: "linear-gradient(135deg, #E8A855 0%, #C8873A 100%)",
-          padding:    "32px 24px 28px",
+          padding:    "30px 24px 28px",
           position:   "relative",
           overflow:   "hidden",
         }}
       >
-        <div aria-hidden="true" style={{ position: "absolute", top: -40, right: -40, width: 160, height: 160, borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.08)" }} />
-        <div aria-hidden="true" style={{ position: "absolute", bottom: -20, left: -20, width: 100, height: 100, borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.06)" }} />
 
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", position: "relative" }}>
           <div>
             <h1
               style={{
-                fontFamily: "var(--font-display)",
-                fontSize:   "clamp(28px, 5vw, 40px)",
+                fontFamily: "var(--font-body)",
+                fontSize:   "clamp(40px, 8vw, 55px)",
                 color:      "#fff",
                 lineHeight: 1.1,
-                marginBottom: "8px",
+                marginBottom: "3px",
                 textShadow: "0 2px 8px rgba(0,0,0,0.15)",
               }}
             >
@@ -93,9 +91,10 @@ export function LibraryView() {
             onClick={() => router.push("/dashboard#ai-recommendations")}
             title="AI book recommendations"
             style={{
-              width:           "72px",
-              height:          "72px",
+              width:           "92px",
+              height:          "92px",
               borderRadius:    "50%",
+              marginRight:      "20px",
               background:      "rgba(255,255,255,0.15)",
               border:          "1.5px solid rgba(255,255,255,0.45)",
               backdropFilter:  "blur(12px)",
