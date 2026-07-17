@@ -12,9 +12,11 @@ interface AppNavProps {
 }
 
 const NAV_LINKS = [
-  { href: "/library",   label: "Library",   icon: <LibraryIcon /> },
   { href: "/dashboard", label: "Dashboard", icon: <DashboardIcon /> },
-  { href: "/reviews",   label: "Reviews",   icon: <StarIcon /> },
+  { href: "/reviews", label: "Reviews", icon: <StarIcon /> },
+  { href: "/library", label: "Bookshelf", icon: <LibraryIcon /> },
+  { href: "/explore", label: "Explore", icon: <ExploreIcon /> },
+ 
 ];
 
 export function AppNav({ user }: AppNavProps) {
@@ -45,11 +47,11 @@ export function AppNav({ user }: AppNavProps) {
     <>
       <header
         style={{
-          position: "sticky",
+          position: "fixed",
           top: 0,
           zIndex: 30,
           width: "100%",
-          backgroundColor: "rgba(245, 239, 230, 0.85)",
+          backgroundColor: "rgba(245, 239, 230, 0.75)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           borderBottom: "1px solid rgba(139, 99, 64, 0.14)",
@@ -61,7 +63,7 @@ export function AppNav({ user }: AppNavProps) {
             maxWidth: "900px",
             margin: "0 auto",
             padding: "0 24px",
-            height: "85px",
+            height: "65px",
             display: "flex",
             alignItems: "center",
             gap: "8px",
@@ -75,7 +77,7 @@ export function AppNav({ user }: AppNavProps) {
               alignItems: "center",
               gap: "9px",
               textDecoration: "none",
-              marginRight: "8px",
+              marginRight: "39px",
               flexShrink: 0,
             }}
           >
@@ -88,7 +90,7 @@ export function AppNav({ user }: AppNavProps) {
                 letterSpacing: "-0.01em",
               }}
             >
-              Bookshelf
+              Bookshelf App
             </span>
           </Link>
 
@@ -414,6 +416,24 @@ function DashboardIcon() {
       <rect x="14" y="3" width="7" height="7" rx="1" />
       <rect x="3" y="14" width="7" height="7" rx="1" />
       <rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+  );
+}
+function ExploreIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
     </svg>
   );
 }

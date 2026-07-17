@@ -502,23 +502,28 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
       </div>
 
    
-      {showProgress && (
-        <ProgressModal book={book} isOpen={showProgress} onClose={() => setShowProgress(false)} />
-      )}
-      {showReview && (
-        <ReviewModal book={book} isOpen={showReview} onClose={() => setShowReview(false)} />
-      )}
-      {showEdit && (
-        <EditBookModal
-          book={book}
-          isOpen={showEdit}
-          onClose={() => setShowEdit(false)}
-        />
-      )}
+
+
     </>
   );
 
-  return createPortal(modal, portalEl);
+  return (
+    <>
+      {createPortal(modal, portalEl)}
+      {showProgress && createPortal(
+        <ProgressModal book={book} isOpen={showProgress} onClose={() => setShowProgress(false)} />,
+        portalEl
+      )}
+      {showReview && createPortal(
+        <ReviewModal book={book} isOpen={showReview} onClose={() => setShowReview(false)} />,
+        portalEl
+      )}
+      {showEdit && createPortal(
+        <EditBookModal book={book} isOpen={showEdit} onClose={() => setShowEdit(false)} />,
+        portalEl
+      )}
+    </>
+  );
 }
 
 
