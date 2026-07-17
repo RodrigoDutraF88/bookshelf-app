@@ -34,6 +34,7 @@
     "@trpc/server": "^11.0.0",
     "@zxing/browser": "^0.2.1",
     "@zxing/library": "^0.23.0",
+    "geist": "^1.7.2",
     "next": "^15.2.3",
     "next-auth": "5.0.0-beta.25",
     "react": "^19.0.0",

@@ -44,7 +44,7 @@ export function BookSpine({ book }: BookSpineProps) {
   const [showDetail, setShowDetail]   = useState(false);
 
   const hash   = hashString(book.id);
-  const width  = 45 + (hash % 5) * 5;
+  const width  = 50 + (hash % 5) * 5;
   const height = 200 + ((hash >> 3) % 7) * 10;
 
   const tiltIndex  = (hash >> 6) % 5;

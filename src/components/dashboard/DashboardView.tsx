@@ -33,7 +33,7 @@ export function DashboardView() {
       <div>
         <h1
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-body)",
             fontSize:   "36px",
             color:      "var(--color-text-primary)",
             lineHeight: 1.1,
@@ -252,8 +252,11 @@ export function DashboardView() {
           </div>
         </div>
       )}
+      <div id="ai-recommendations">
+        <RecommendationsCard />
 
-      <RecommendationsCard />
+      </div>
+      
 
       <style>{`
         @keyframes pulse {

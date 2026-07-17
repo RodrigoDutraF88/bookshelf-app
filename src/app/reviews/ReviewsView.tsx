@@ -33,11 +33,11 @@ export function ReviewsView() {
 
   return (
     <div>
-      {/* Page header */}
+      
       <div style={{ marginBottom: "36px" }}>
         <h1
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-body)",
             fontSize: "clamp(26px, 5vw, 38px)",
             color: "var(--color-text-primary)",
             letterSpacing: "-0.02em",
@@ -87,7 +87,7 @@ export function ReviewsView() {
         </div>
       )}
 
-      {/* Content */}
+      
       {isLoading ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {[1, 2, 3].map((i) => (
@@ -115,7 +115,7 @@ export function ReviewsView() {
             gap: "12px",
           }}
         >
-          {/* Decorative mini shelf */}
+
           <svg width="120" height="60" viewBox="0 0 120 60" fill="none" aria-hidden="true">
             {[
               { x: 8,  h: 36, c: "#4A7C59" },
