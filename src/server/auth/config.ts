@@ -15,16 +15,11 @@ declare module "next-auth" {
 export const authConfig = {
   ...authConfigEdge,
   adapter: PrismaAdapter(db),
+  session: { strategy: "database" },
   callbacks: {
     ...authConfigEdge.callbacks,
     session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-        createdAt: (user as unknown as { createdAt: Date }).createdAt
-          ?.toISOString() ?? new Date().toISOString(),
-      },
+    
     }),
   },
 } satisfies NextAuthConfig;
