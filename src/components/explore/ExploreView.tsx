@@ -90,7 +90,7 @@ export function ExploreView({ initialQuery = "" }: { initialQuery?: string }) {
         </span>
         <input
           ref={inputRef}
-          type="search"
+          type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by title, author, or ISBN…"
