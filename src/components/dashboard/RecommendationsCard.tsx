@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 
 interface Recommendation {
@@ -11,6 +12,7 @@ interface Recommendation {
 
 export function RecommendationsCard() {
   const [enabled, setEnabled] = useState(false);
+  const router = useRouter();
 
   const { data, isLoading, isError, error, refetch } =
     api.ai.getRecommendations.useQuery(undefined, {
@@ -26,6 +28,11 @@ export function RecommendationsCard() {
     } else {
       setEnabled(true);
     }
+  }
+
+  function handleRecommendationClick(rec: Recommendation) {
+    const query = `${rec.title} ${rec.author}`;
+    router.push(`/explore?q=${encodeURIComponent(query)}`);
   }
 
   const preconditionFailed = isError && error?.data?.code === "PRECONDITION_FAILED";
@@ -141,10 +148,15 @@ export function RecommendationsCard() {
       {data && !isLoading && (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {data.map((rec: Recommendation, i: number) => (
-            <RecommendationItem key={i} rec={rec} index={i} />
+            <RecommendationItem
+              key={i}
+              rec={rec}
+              index={i}
+              onClick={() => handleRecommendationClick(rec)}
+            />
           ))}
           <p style={{ fontSize: "11px", color: "var(--color-text-muted)", textAlign: "center", marginTop: "4px" }}>
-            Recommendations by Google Gemini · results may vary
+            Recommendations by Google Gemini , results may vary , click a book to find it
           </p>
         </div>
       )}
@@ -175,14 +187,24 @@ export function RecommendationsCard() {
 }
 
 
-function RecommendationItem({ rec, index }: { rec: Recommendation; index: number }) {
+function RecommendationItem({
+  rec,
+  index,
+  onClick,
+}: {
+  rec: Recommendation;
+  index: number;
+  onClick: () => void;
+}) {
   const [hovered, setHovered] = useState(false);
 
   const COLORS = ["#C8873A", "#4A7C59", "#6B8FA8", "#B85450", "#8B6B8A"];
   const color  = COLORS[index % COLORS.length]!;
 
   return (
-    <div
+    <button
+      type="button"
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -194,6 +216,10 @@ function RecommendationItem({ rec, index }: { rec: Recommendation; index: number
         border:          `1px solid ${hovered ? "var(--color-border)" : "transparent"}`,
         transition:      "all 150ms ease",
         alignItems:      "flex-start",
+        width:           "100%",
+        textAlign:       "left",
+        cursor:          "pointer",
+        font:            "inherit",
       }}
     >
       
@@ -229,7 +255,20 @@ function RecommendationItem({ rec, index }: { rec: Recommendation; index: number
           {rec.reason}
         </p>
       </div>
-    </div>
+
+      
+      <div
+        style={{
+          flexShrink: 0,
+          color: "var(--color-text-muted)",
+          opacity: hovered ? 1 : 0.4,
+          transition: "opacity 150ms ease",
+          paddingTop: "4px",
+        }}
+      >
+        <ChevronIcon />
+      </div>
+    </button>
   );
 }
 
@@ -253,6 +292,13 @@ function SpinnerIcon() {
     <svg width="13" height="13" viewBox="0 0 18 18" fill="none" style={{ animation: "spin 0.8s linear infinite" }} aria-hidden="true">
       <circle cx="9" cy="9" r="7" stroke="currentColor" strokeOpacity="0.3" strokeWidth="2" />
       <path d="M9 2a7 7 0 0 1 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+function ChevronIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9 18l6-6-6-6" />
     </svg>
   );
 }

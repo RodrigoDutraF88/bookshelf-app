@@ -4,9 +4,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { searchGoogleBooks, type GoogleBookResult } from "~/lib/google-books";
 
-export function ExploreView() {
+export function ExploreView({ initialQuery = "" }: { initialQuery?: string }) {
   const router = useRouter();
-  const [query,     setQuery]     = useState("");
+  const [query,     setQuery]     = useState(initialQuery);
   const [results,   setResults]   = useState<GoogleBookResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [searchErr, setSearchErr] = useState(false);
@@ -38,13 +38,18 @@ export function ExploreView() {
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [query, runSearch]);
 
-  
   useEffect(() => {
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
+  useEffect(() => {
+    if (initialQuery && initialQuery.trim().length >= 3) {
+      void runSearch(initialQuery);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery]);
+
   function handleBookClick(book: GoogleBookResult) {
-    
     const params = new URLSearchParams({
       googleId:     book.googleId,
       title:        book.title,
@@ -59,154 +64,154 @@ export function ExploreView() {
   }
 
   return (
-    <div>
-      
-      <div
-        style={{
-          padding:      "32px 110px 24px",
-          position:     "relative",
-          overflow:     "hidden",
-        }}
-      >
-        <div aria-hidden="true" style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.08)" }} />
+    <div style={{ padding: "20px 16px 32px", maxWidth: "760px", margin: "0 auto" }}>
+      {/* Header — matches ReviewsView: plain text, no background */}
+      <div style={{ marginBottom: "28px" }}>
         <h1
           style={{
-            fontFamily: "var(--font-body)",
-            fontSize:   "36px",
-            color:      "var(--color-text-primary)",
-            marginBottom: "40px"
+            fontFamily:    "var(--font-body)",
+            fontSize:      "clamp(26px, 5vw, 38px)",
+            color:         "var(--color-text-primary)",
+            letterSpacing: "-0.02em",
+            marginBottom:  "6px",
           }}
         >
           Explore Books
         </h1>
-
-      
-        <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#C8873A", pointerEvents: "none" }}>
-            <SearchIcon />
-          </span>
-          <input
-            ref={inputRef}
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by title, author, or ISBN…"
-            style={{
-              width:           "100%",
-              padding:         "13px 14px 13px 42px",
-              borderRadius:    "var(--radius-lg)",
-              border:          "none",
-              backgroundColor: "#fff",
-              fontSize:        "15px",
-              color:           "var(--color-text-primary)",
-              fontFamily:      "var(--font-body)",
-              boxShadow:       "0 4px 20px rgba(0,0,0,0.12)",
-              outline:         "none",
-              boxSizing:       "border-box",
-            }}
-            aria-label="Search Google Books"
-          />
-          {query && (
-            <button
-              onClick={() => setQuery("")}
-              style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#aaa", padding: "4px" }}
-              aria-label="Clear search"
-            >
-              <XIcon />
-            </button>
-          )}
-        </div>
+        <p style={{ fontSize: "14px", color: "var(--color-text-muted)", fontFamily: "var(--font-body)" }}>
+          Search millions of books and add them to your shelf
+        </p>
       </div>
 
-      
-      <div style={{ padding: "16px", minHeight: "50vh" }}>
+      {/* Search bar */}
+      <div style={{ position: "relative", marginBottom: "28px" }}>
+        <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "var(--color-text-muted)", pointerEvents: "none" }}>
+          <SearchIcon />
+        </span>
+        <input
+          ref={inputRef}
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by title, author, or ISBN…"
+          style={{
+            width:           "100%",
+            padding:         "12px 40px 12px 40px",
+            borderRadius:    "var(--radius-lg)",
+            border:          "1.5px solid var(--color-border)",
+            backgroundColor: "var(--color-surface)",
+            fontSize:        "15px",
+            color:           "var(--color-text-primary)",
+            fontFamily:      "var(--font-body)",
+            outline:         "none",
+            boxSizing:       "border-box",
+          }}
+          aria-label="Search Google Books"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-muted)", padding: "4px", display: "flex" }}
+            aria-label="Clear search"
+          >
+            <XIcon />
+          </button>
+        )}
+      </div>
 
-       
-        {searching && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
-            {Array.from({ length: 9 }, (_, i) => (
-              <div key={i} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <div style={{ aspectRatio: "2/3", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-surface-raised)", animation: "pulse 1.5s ease-in-out infinite" }} />
-                <div style={{ height: "11px", width: "80%", borderRadius: "4px", backgroundColor: "var(--color-surface-raised)", animation: "pulse 1.5s ease-in-out infinite" }} />
-                <div style={{ height: "10px", width: "55%", borderRadius: "4px", backgroundColor: "var(--color-surface-raised)", animation: "pulse 1.5s ease-in-out infinite" }} />
-              </div>
+      {searching && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+          {Array.from({ length: 9 }, (_, i) => (
+            <div key={i} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <div
+                className="animate-pulse"
+                style={{ aspectRatio: "2/3", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+              />
+              <div className="animate-pulse" style={{ height: "11px", width: "80%", borderRadius: "4px", backgroundColor: "var(--color-surface)" }} />
+              <div className="animate-pulse" style={{ height: "10px", width: "55%", borderRadius: "4px", backgroundColor: "var(--color-surface)" }} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {searchErr && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 24px", textAlign: "center", gap: "12px" }}>
+          <p style={{ fontSize: "15px", color: "var(--color-text-secondary)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
+            Search failed
+          </p>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", maxWidth: "260px", lineHeight: 1.6 }}>
+            Check your connection and try again.
+          </p>
+        </div>
+      )}
+
+      {!searching && !searchErr && hasSearched && results.length === 0 && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 24px", textAlign: "center", gap: "12px" }}>
+          <p style={{ fontSize: "15px", color: "var(--color-text-secondary)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
+            No results for &quot;{query}&quot;
+          </p>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", maxWidth: "260px", lineHeight: 1.6 }}>
+            Try a different title or author name.
+          </p>
+        </div>
+      )}
+
+      {!searching && results.length > 0 && (
+        <>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", marginBottom: "14px", fontFamily: "var(--font-body)" }}>
+            {results.length} result{results.length !== 1 ? "s" : ""}
+          </p>
+          <div
+            style={{
+              display:             "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap:                 "14px 12px",
+            }}
+          >
+            {results.map((book) => (
+              <ExploreBookCard key={book.googleId} book={book} onClick={() => handleBookClick(book)} />
             ))}
           </div>
-        )}
+        </>
+      )}
 
-        
-        {searchErr && (
-          <div style={{ textAlign: "center", padding: "40px 20px" }}>
-            <p style={{ fontSize: "14px", color: "var(--color-danger)" }}>
-              Search failed. Check your connection and try again.
-            </p>
-          </div>
-        )}
-
-        
-        {!searching && !searchErr && hasSearched && results.length === 0 && (
-          <div style={{ textAlign: "center", padding: "40px 20px" }}>
-            <p style={{ fontSize: "28px", marginBottom: "12px" }}>📚</p>
-            <p style={{ fontSize: "14px", color: "var(--color-text-muted)" }}>
-              No results for &quot;{query}&quot;
-            </p>
-            <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: "4px" }}>
-              Try a different title or author name
-            </p>
-          </div>
-        )}
-
-       
-        {!searching && results.length > 0 && (
-          <>
-            <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "12px" }}>
-              {results.length} result{results.length !== 1 ? "s" : ""}
-            </p>
-            <div
-              style={{
-                display:             "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap:                 "12px",
-              }}
-            >
-              {results.map((book) => (
-                <ExploreBookCard key={book.googleId} book={book} onClick={() => handleBookClick(book)} />
-              ))}
-            </div>
-          </>
-        )}
-
-       
-        {!hasSearched && !searching && (
-          <div style={{ textAlign: "center", padding: "48px 20px" }}>
-            <div style={{ fontSize: "48px", marginBottom: "16px" }}>🔍</div>
-            <p style={{ fontFamily: "var(--font-display)", fontSize: "16px", color: "var(--color-text-primary)", marginBottom: "8px" }}>
-              Discover your next read
-            </p>
-            <p style={{ fontSize: "13px", color: "var(--color-text-muted)", lineHeight: 1.6, maxWidth: "280px", margin: "0 auto" }}>
-              Search millions of books by title, author, or ISBN and add them straight to your library.
-            </p>
-          </div>
-        )}
-      </div>
-
-      <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-      `}</style>
+      {!hasSearched && !searching && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 24px", textAlign: "center", gap: "12px" }}>
+          <svg width="120" height="60" viewBox="0 0 120 60" fill="none" aria-hidden="true">
+            {[
+              { x: 8,  h: 36, c: "#4A7C59" },
+              { x: 22, h: 44, c: "#C8873A" },
+              { x: 36, h: 30, c: "#6B8FA8" },
+              { x: 48, h: 40, c: "#B85450" },
+              { x: 62, h: 34, c: "#8B6B8A" },
+              { x: 76, h: 42, c: "#4A7C59" },
+              { x: 90, h: 28, c: "#C8873A" },
+              { x: 102,h: 38, c: "#6B8FA8" },
+            ].map((b, i) => (
+              <rect key={i} x={b.x} y={48 - b.h} width={12} height={b.h} rx="1.5" fill={b.c} opacity="0.5" />
+            ))}
+            <rect x="0" y="48" width="120" height="4" rx="1" fill="#8B6340" />
+            <rect x="0" y="52" width="120" height="3" rx="1" fill="#3D2314" opacity="0.6" />
+          </svg>
+          <p style={{ fontSize: "15px", color: "var(--color-text-secondary)", fontFamily: "var(--font-serif)", fontStyle: "italic" }}>
+            Discover your next read
+          </p>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", maxWidth: "260px", lineHeight: 1.6 }}>
+            Search millions of books by title, author, or ISBN and add them straight to your library.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
 
 
 function ExploreBookCard({ book, onClick }: { book: GoogleBookResult; onClick: () => void }) {
-  const [hovered, setHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
         display:         "flex",
         flexDirection:   "column",
@@ -217,23 +222,18 @@ function ExploreBookCard({ book, onClick }: { book: GoogleBookResult; onClick: (
         textAlign:       "left",
         padding:         0,
         borderRadius:    "var(--radius-md)",
-        transition:      "transform 150ms ease",
-        transform:       hovered ? "translateY(-3px)" : "translateY(0)",
+        WebkitTapHighlightColor: "transparent",
       }}
       aria-label={`${book.title} by ${book.author}`}
     >
-      
       <div
         style={{
           aspectRatio:     "2/3",
           borderRadius:    "var(--radius-md)",
           overflow:        "hidden",
-          backgroundColor: "var(--color-surface-raised)",
+          backgroundColor: "var(--color-surface)",
+          border:          "1px solid var(--color-border)",
           position:        "relative",
-          boxShadow:       hovered
-            ? "0 8px 24px rgba(44,24,16,0.22)"
-            : "0 2px 8px rgba(44,24,16,0.12)",
-          transition:      "box-shadow 150ms ease",
         }}
       >
         {book.coverImage && !imgError ? (
@@ -255,7 +255,6 @@ function ExploreBookCard({ book, onClick }: { book: GoogleBookResult; onClick: (
               flexDirection:   "column",
               gap:             "6px",
               padding:         "8px",
-              background:      "linear-gradient(135deg, var(--color-surface-raised), var(--color-bg-deep))",
             }}
           >
             <span style={{ fontSize: "20px" }}>📖</span>
@@ -266,8 +265,7 @@ function ExploreBookCard({ book, onClick }: { book: GoogleBookResult; onClick: (
         )}
       </div>
 
-  
-      <div style={{ padding: "0 2px" }}>
+      <div style={{ padding: "0 1px" }}>
         <p
           style={{
             fontSize:     "11px",
