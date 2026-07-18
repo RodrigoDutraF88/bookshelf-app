@@ -8,13 +8,19 @@ export const metadata: Metadata = {
   description: "Search and discover books to add to your library",
 };
 
-export default async function ExplorePage() {
+export default async function ExplorePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
+  const { q } = await searchParams;
+
   return (
     <main style={{ minHeight: "100dvh", backgroundColor: "var(--color-bg)" }}>
-      <ExploreView />
+      <ExploreView initialQuery={q ?? ""} />
     </main>
   );
 }
