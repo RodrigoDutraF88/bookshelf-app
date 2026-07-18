@@ -11,8 +11,16 @@ import GoogleProvider from "next-auth/providers/google";
  */
 export const authConfigEdge = {
   providers: [
-    DiscordProvider,
-    GoogleProvider,
+    DiscordProvider({
+      clientId: process.env.AUTH_DISCORD_ID,
+      clientSecret: process.env.AUTH_DISCORD_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
   ],
   session: { strategy: "database" },
   callbacks: {
