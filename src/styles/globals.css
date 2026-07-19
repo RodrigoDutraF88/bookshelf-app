@@ -46,11 +46,11 @@
   --color-success-dim:     rgba(74, 124, 89, 0.12);
  
   
-  --spine-want:            #6B8FA8;   
-  --spine-reading:         #C8873A;   
-  --spine-completed:       #4A7C59;   
-  --spine-dropped:         #8B6B8A;  
- 
+  --spine-want:            #4A78B0;   /* muted-vivid blue */
+  --spine-reading:         #C97D2E;   /* muted-vivid amber/orange */
+  --spine-completed:       #3D8A5C;   /* muted-vivid green */
+  --spine-dropped:         #C24842;   /* muted-vivid red */
+    
   
   --spine-alt-1:           #B85450;   
   --spine-alt-2:           #5B7A8C;   

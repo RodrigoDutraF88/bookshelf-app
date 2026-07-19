@@ -30,15 +30,6 @@ const SPINE_COLORS: Record<string, string> = {
   DROPPED:           "var(--spine-dropped)",
 };
 
-const ALT_COLORS = [
-  "var(--spine-alt-1)",
-  "var(--spine-alt-2)",
-  "var(--spine-alt-3)",
-  "var(--spine-alt-4)",
-  "var(--spine-alt-5)",
-  "var(--spine-alt-6)",
-];
-
 export function BookSpine({ book }: BookSpineProps) {
   const [hovered, setHovered]         = useState(false);
   const [showDetail, setShowDetail]   = useState(false);
@@ -51,10 +42,15 @@ export function BookSpine({ book }: BookSpineProps) {
   const tiltValues = [-1.5, -0.8, 0, 0, 0.8];
   const tilt       = tiltValues[tiltIndex] ?? 0;
 
-  const useAlt    = book.status !== "CURRENTLY_READING" && (hash >> 9) % 4 === 0;
-  const spineColor = useAlt
-    ? (ALT_COLORS[(hash >> 12) % ALT_COLORS.length] ?? "var(--spine-want)")
-    : (SPINE_COLORS[book.status] ?? "var(--spine-want)");
+
+  const baseColor   = SPINE_COLORS[book.status] ?? "var(--spine-want)";
+  const shadeIndex  = (hash >> 9) % 5;               
+  const shadeMixPct = [0, 8, 16, -8, -16][shadeIndex] ?? 0; 
+  const spineColor  = shadeMixPct === 0
+    ? baseColor
+    : shadeMixPct > 0
+      ? `color-mix(in srgb, ${baseColor} ${100 - shadeMixPct}%, #fff)`
+      : `color-mix(in srgb, ${baseColor} ${100 + shadeMixPct}%, #000)`;
 
   const progress =
     book.readingProgress?.currentPage && book.readingProgress?.totalPages
