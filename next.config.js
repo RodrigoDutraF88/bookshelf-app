@@ -6,13 +6,14 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
+  output: "standalone",
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "cdn.discordapp.com",
       },
-      // If you later support Google OAuth, add this too:
+      
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
