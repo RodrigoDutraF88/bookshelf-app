@@ -34,7 +34,17 @@ const STATUS_COLORS: Record<string, string> = {
   DROPPED:           "#8B6340",
 };
 
-
+function useIsMobile(breakpoint = 640) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps) {
   const [showProgress, setShowProgress]     = useState(false);
@@ -44,6 +54,7 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
   const [portalEl, setPortalEl]             = useState<Element | null>(null);
   const backdropRef                         = useRef<HTMLDivElement>(null);
   const [showEdit, setShowEdit] = useState(false);
+  const isMobile = useIsMobile();
 
   const utils      = api.useUtils();
   const deleteBook = api.book.delete.useMutation({
@@ -53,11 +64,9 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
     },
   });
 
-
   useEffect(() => {
     setPortalEl(document.body);
   }, []);
-
 
   useEffect(() => {
     if (isOpen) {
@@ -69,14 +78,12 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
     }
   }, [isOpen]);
 
-
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [isOpen, onClose]);
-
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -106,7 +113,6 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
 
   const modal = (
     <>
-      
       <div
         ref={backdropRef}
         onClick={(e) => { if (e.target === backdropRef.current) onClose(); }}
@@ -115,9 +121,9 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
           inset:           0,
           zIndex:          9998,
           display:         "flex",
-          alignItems:      "center",
+          alignItems:      isMobile ? "flex-end" : "center",
           justifyContent:  "center",
-          padding:         "32px 20px",
+          padding:         isMobile ? "0" : "32px 20px",
           backgroundColor: mounted ? "rgba(15, 9, 3, 0.78)" : "rgba(15, 9, 3, 0)",
           backdropFilter:  mounted ? "blur(8px)" : "blur(0px)",
           WebkitBackdropFilter: mounted ? "blur(8px)" : "blur(0px)",
@@ -127,42 +133,44 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
         role="dialog"
         aria-label={`Book details: ${book.title}`}
       >
-       
         <div
           style={{
             display:       "flex",
-            maxWidth:      "720px",
+            flexDirection: isMobile ? "column" : "row",
+            maxWidth:      isMobile ? "100%" : "720px",
             width:         "100%",
-            maxHeight:     "88vh",
+            maxHeight:     isMobile ? "92vh" : "88vh",
 
-            transform:     mounted ? "perspective(1200px) rotateY(0deg) scale(1)" : "perspective(1200px) rotateY(-8deg) scale(0.92)",
+            transform:     mounted
+              ? (isMobile ? "translateY(0) scale(1)" : "perspective(1200px) rotateY(0deg) scale(1)")
+              : (isMobile ? "translateY(40px) scale(0.98)" : "perspective(1200px) rotateY(-8deg) scale(0.92)"),
             opacity:       mounted ? 1 : 0,
             transition:    "transform 380ms cubic-bezier(0.34,1.2,0.64,1), opacity 300ms ease",
-          
+
             filter:        "drop-shadow(0 40px 60px rgba(10,5,2,0.65)) drop-shadow(0 8px 20px rgba(10,5,2,0.4))",
           }}
         >
-        
           <div
             style={{
-              flex:            "0 0 260px",
+              flex:            isMobile ? "0 0 auto" : "0 0 260px",
               display:         "flex",
               flexDirection:   "column",
-              borderRadius:    "4px 0 0 4px",
+              borderRadius:    isMobile ? "16px 16px 0 0" : "4px 0 0 4px",
               overflow:        "hidden",
               position:        "relative",
-            
+
               background:      "linear-gradient(160deg, #fdf8f2 0%, #f5efe6 60%, #ede3d5 100%)",
 
-              boxShadow:       "inset -8px 0 16px rgba(60,30,10,0.18), inset 4px 0 8px rgba(255,245,230,0.4)",
+              boxShadow: isMobile
+                ? "inset 0 -8px 16px rgba(60,30,10,0.10)"
+                : "inset -8px 0 16px rgba(60,30,10,0.18), inset 4px 0 8px rgba(255,245,230,0.4)",
             }}
           >
-     
             <div
               style={{
                 position:   "relative",
                 width:      "100%",
-                flex:       "0 0 62%",
+                flex:       isMobile ? "0 0 160px" : "0 0 62%",
                 overflow:   "hidden",
                 background: `linear-gradient(135deg, color-mix(in srgb, ${accentColor} 25%, #e8ddd0) 0%, #d4c8b8 100%)`,
               }}
@@ -172,8 +180,8 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
                   src={book.coverImage}
                   alt={`Cover of ${book.title}`}
                   fill
-                  style={{ objectFit: "cover" }}
-                  sizes="260px"
+                  style={{ objectFit: isMobile ? "contain" : "cover" }}
+                  sizes={isMobile ? "100vw" : "260px"}
                 />
               ) : (
                 <div
@@ -187,7 +195,7 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
                     gap:            "10px",
                   }}
                 >
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={accentColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6 }} aria-hidden="true">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={accentColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6 }} aria-hidden="true">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                   </svg>
@@ -197,7 +205,6 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
                 </div>
               )}
 
-       
               <div
                 style={{
                   position:        "absolute",
@@ -219,17 +226,18 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
               </div>
             </div>
 
-
             <div
               style={{
-                padding:        "16px 18px 20px",
+                padding:        isMobile ? "14px 18px 16px" : "16px 18px 20px",
                 display:        "flex",
-                flexDirection:  "column",
-                gap:            "8px",
+                flexDirection:  isMobile ? "row" : "column",
+                flexWrap:       "wrap",
+                alignItems:     isMobile ? "flex-start" : "stretch",
+                gap:            isMobile ? "6px 16px" : "8px",
                 flex:           1,
               }}
             >
-              <div>
+              <div style={{ flex: isMobile ? "1 1 100%" : undefined }}>
                 <h2
                   style={{
                     fontFamily:   "var(--font-display)",
@@ -281,9 +289,8 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
                 </div>
               )}
 
-            
               {progress !== null && (
-                <div>
+                <div style={{ flex: isMobile ? "1 1 100%" : undefined }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
                     <span style={{ fontSize: "10px", color: "#a08060" }}>Progress</span>
                     <span style={{ fontSize: "10px", color: accentColor, fontWeight: 700 }}>{progress}%</span>
@@ -296,60 +303,60 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
             </div>
           </div>
 
+          {!isMobile && (
+            <div
+              aria-hidden="true"
+              style={{
+                width:      "18px",
+                flexShrink: 0,
+                background: `linear-gradient(to right,
+                  rgba(30,15,5,0.55) 0%,
+                  rgba(80,45,20,0.35) 30%,
+                  rgba(160,110,60,0.25) 55%,
+                  rgba(220,185,140,0.15) 75%,
+                  rgba(245,235,220,0.05) 100%
+                )`,
+                boxShadow:  "inset 2px 0 4px rgba(255,240,215,0.12), inset -2px 0 8px rgba(0,0,0,0.3)",
+                position:   "relative",
+                display:    "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-around",
+                paddingBlock: "20px",
+              }}
+            >
+              {[0,1,2,3,4].map((i) => (
+                <div
+                  key={i}
+                  style={{
+                    width:           "5px",
+                    height:          "5px",
+                    borderRadius:    "50%",
+                    backgroundColor: `rgba(180,130,70,0.4)`,
+                    boxShadow:       "0 1px 2px rgba(0,0,0,0.3)",
+                  }}
+                />
+              ))}
+            </div>
+          )}
 
-          <div
-            aria-hidden="true"
-            style={{
-              width:      "18px",
-              flexShrink: 0,
-              background: `linear-gradient(to right,
-                rgba(30,15,5,0.55) 0%,
-                rgba(80,45,20,0.35) 30%,
-                rgba(160,110,60,0.25) 55%,
-                rgba(220,185,140,0.15) 75%,
-                rgba(245,235,220,0.05) 100%
-              )`,
-              boxShadow:  "inset 2px 0 4px rgba(255,240,215,0.12), inset -2px 0 8px rgba(0,0,0,0.3)",
-              position:   "relative",
-              display:    "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "space-around",
-              paddingBlock: "20px",
-            }}
-          >
-    
-            {[0,1,2,3,4].map((i) => (
-              <div
-                key={i}
-                style={{
-                  width:           "5px",
-                  height:          "5px",
-                  borderRadius:    "50%",
-                  backgroundColor: `rgba(180,130,70,0.4)`,
-                  boxShadow:       "0 1px 2px rgba(0,0,0,0.3)",
-                }}
-              />
-            ))}
-          </div>
-
-        
           <div
             style={{
               flex:           "1",
               display:        "flex",
               flexDirection:  "column",
-              borderRadius:   "0 4px 4px 0",
+              borderRadius:   isMobile ? "0 0 16px 16px" : "0 4px 4px 0",
               overflow:       "hidden",
-             
+
               background:     "linear-gradient(170deg, #fefaf5 0%, #f8f1e8 50%, #f0e8db 100%)",
-              boxShadow:      "inset 4px 0 8px rgba(255,245,225,0.5), inset -2px 0 6px rgba(60,30,10,0.08)",
+              boxShadow: isMobile
+                ? "none"
+                : "inset 4px 0 8px rgba(255,245,225,0.5), inset -2px 0 6px rgba(60,30,10,0.08)",
               position:       "relative",
               overflowY:      "auto",
-              padding:        "28px 26px 26px",
+              padding:        isMobile ? "22px 18px 24px" : "28px 26px 26px",
             }}
           >
-    
             <button
               onClick={onClose}
               aria-label="Close"
@@ -357,8 +364,8 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
                 position:        "absolute",
                 top:             "14px",
                 right:           "14px",
-                width:           "28px",
-                height:          "28px",
+                width:           "32px",
+                height:          "32px",
                 display:         "flex",
                 alignItems:      "center",
                 justifyContent:  "center",
@@ -383,7 +390,6 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
               ✕
             </button>
 
-          
             <div style={{ marginBottom: "22px", paddingRight: "32px" }}>
               <p
                 style={{
@@ -401,7 +407,7 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
               <h3
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize:   "20px",
+                  fontSize:   isMobile ? "18px" : "20px",
                   color:      "#2a1a0e",
                   lineHeight: 1.2,
                 }}
@@ -410,7 +416,6 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
               </h3>
             </div>
 
-   
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
 
               {canProgress && (
@@ -456,7 +461,6 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
               />
             </div>
 
-         
             {book.review?.body && (
               <div
                 style={{
@@ -482,28 +486,9 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
                 </p>
               </div>
             )}
-
-      
-            <p
-              aria-hidden="true"
-              style={{
-                textAlign:  "center",
-                fontSize:   "10px",
-                color:      "rgba(139,99,64,0.3)",
-                marginTop:  "16px",
-                fontFamily: "var(--font-serif)",
-                fontStyle:  "italic",
-              }}
-            >
-           
-            </p>
           </div>
         </div>
       </div>
-
-   
-
-
     </>
   );
 
@@ -525,7 +510,6 @@ export function BookDetailModal({ book, isOpen, onClose }: BookDetailModalProps)
     </>
   );
 }
-
 
 interface PageActionButtonProps {
   icon:     React.ReactNode;
@@ -589,7 +573,6 @@ function PageActionButton({ icon, label, sub, color, primary, danger, active, di
   );
 }
 
-
 function BookmarkIcon() {
   return <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.8.4L8 13.1l-5.2 2.8A.5.5 0 0 1 2 15.5V2z"/></svg>;
 }
@@ -600,5 +583,9 @@ function PencilIcon() {
   return <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.7 1.3a1 1 0 0 1 1.4 0l1.6 1.6a1 1 0 0 1 0 1.4l-9 9a1 1 0 0 1-.5.3l-3 .7a.5.5 0 0 1-.6-.6l.7-3a1 1 0 0 1 .3-.5l9-9z"/></svg>;
 }
 function TrashIcon() {
-  return <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.5 1a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zM2 4a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1H13l-.8 8a2 2 0 0 1-2 1.8H5.8a2 2 0 0 1-2-1.8L3 4.5H2.5A.5.5 0 0 1 2 4z"/></svg>;
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M5.5 1a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5zM2 4a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1H13l-.8 8a2 2 0 0 1-2 1.8H5.8a2 2 0 0 1-2-1.8L3 4.5H2.5A.5.5 0 0 1 2 4z" />
+    </svg>
+  );
 }
