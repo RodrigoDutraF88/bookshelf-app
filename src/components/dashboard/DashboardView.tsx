@@ -27,14 +27,13 @@ export function DashboardView() {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "clamp(20px, 4vw, 32px)" }}>
 
-     
       <div>
         <h1
           style={{
             fontFamily: "var(--font-body)",
-            fontSize:   "36px",
+            fontSize:   "clamp(24px, 6vw, 36px)",
             color:      "var(--color-text-primary)",
             lineHeight: 1.1,
           }}
@@ -50,12 +49,11 @@ export function DashboardView() {
         </p>
       </div>
 
-     
       <div
         style={{
           display:             "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-          gap:                 "16px",
+          gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+          gap:                 "12px",
         }}
       >
         <StatCard
@@ -109,7 +107,7 @@ export function DashboardView() {
       <div
         style={{
           display:             "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
           gap:                 "16px",
         }}
       >
@@ -117,18 +115,16 @@ export function DashboardView() {
         <GenreChart    data={stats?.genreDistribution ?? []} isLoading={isLoading} />
       </div>
 
-    
       {(isLoading || (stats?.recentlyCompleted.length ?? 0) > 0) && (
         <div
           style={{
             backgroundColor: "var(--color-surface)",
             border:          "1px solid var(--color-border)",
             borderRadius:    "var(--radius-lg)",
-            padding:         "24px",
+            padding:         "clamp(16px, 4vw, 24px)",
             boxShadow:       "var(--shadow-sm)",
           }}
         >
-          
           <h3
             style={{
               fontFamily:   "var(--font-display)",
@@ -166,14 +162,13 @@ export function DashboardView() {
                     style={{
                       display:      "flex",
                       alignItems:   "center",
-                      gap:          "14px",
+                      gap:          "12px",
                       padding:      "12px 0",
                       borderBottom: i < stats.recentlyCompleted.length - 1
                         ? "1px solid var(--color-border)"
                         : "none",
                     }}
                   >
-        
                     <div
                       style={{
                         width:           36,
@@ -211,7 +206,6 @@ export function DashboardView() {
                       )}
                     </div>
 
-         
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p
                         style={{
@@ -229,9 +223,7 @@ export function DashboardView() {
                         {book.author}
                       </p>
                     </div>
-                    
 
-                  
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "3px", flexShrink: 0 }}>
                       {book.rating && (
                         <div style={{ display: "flex", gap: "1px" }}>
@@ -240,23 +232,19 @@ export function DashboardView() {
                           ))}
                         </div>
                       )}
-                      <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
+                      <span style={{ fontSize: "11px", color: "var(--color-text-muted)", whiteSpace: "nowrap" }}>
                         {new Date(book.finishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </span>
                     </div>
                   </div>
-                  
-                  
                 ))}
-                
           </div>
         </div>
       )}
+
       <div id="ai-recommendations">
         <RecommendationsCard />
-
       </div>
-      
 
       <style>{`
         @keyframes pulse {
