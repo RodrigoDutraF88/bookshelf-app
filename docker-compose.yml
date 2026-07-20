@@ -11,10 +11,15 @@ services:
     volumes:
       - bookshelf-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bookshelf"]
-      interval: 5s
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U bookshelf -d bookshelf || exit 1"
+        ]
+      interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 15s
 
   migrate:
     build:
@@ -26,7 +31,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: npx prisma migrate deploy
+    command: >
+      sh -c "
+      npx prisma generate &&
+      npx prisma migrate deploy
+      "
 
   app:
     build:
