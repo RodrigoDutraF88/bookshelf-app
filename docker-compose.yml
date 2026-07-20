@@ -16,6 +16,18 @@ services:
       timeout: 5s
       retries: 5
 
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npx prisma migrate deploy
+
   app:
     build:
       context: .
@@ -26,9 +38,8 @@ services:
     env_file:
       - .env.docker
     depends_on:
-      db:
-        condition: service_healthy
-    command: sh -c "npx prisma migrate deploy && node server.js"
+      migrate:
+        condition: service_completed_successfully
 
 volumes:
   bookshelf-db-data:
