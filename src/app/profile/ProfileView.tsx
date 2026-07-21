@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 import { api } from "~/trpc/react";
 import type { Session } from "next-auth";
 
@@ -78,7 +79,6 @@ export function ProfileView({ user }: { user: Session["user"] }) {
           overflow: "hidden",
         }}
       >
-       
         <svg
           aria-hidden="true"
           style={{ position: "absolute", right: 0, bottom: 0, opacity: 0.06, pointerEvents: "none" }}
@@ -98,7 +98,6 @@ export function ProfileView({ user }: { user: Session["user"] }) {
           <rect x="0" y="71" width="200" height="4" rx="1" fill="#3D2314" />
         </svg>
 
-     
         {user.image ? (
           <Image
             src={user.image}
@@ -132,7 +131,7 @@ export function ProfileView({ user }: { user: Session["user"] }) {
           </div>
         )}
 
-        <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ position: "relative", zIndex: 1, flex: 1, minWidth: 0 }}>
           <h1
             style={{
               fontFamily: "var(--font-display)",
@@ -157,7 +156,6 @@ export function ProfileView({ user }: { user: Session["user"] }) {
         </div>
       </div>
 
-  
       {isLoading ? (
         <div
           style={{
@@ -193,7 +191,6 @@ export function ProfileView({ user }: { user: Session["user"] }) {
             Reading Stats
           </p>
 
-     
           <div
             style={{
               display: "grid",
@@ -242,7 +239,6 @@ export function ProfileView({ user }: { user: Session["user"] }) {
             ))}
           </div>
 
-      
           {breakdown.length > 0 && (
             <div
               style={{
@@ -251,6 +247,7 @@ export function ProfileView({ user }: { user: Session["user"] }) {
                 borderRadius: "var(--radius-lg)",
                 padding: "20px",
                 boxShadow: "var(--shadow-xs)",
+                marginBottom: "28px",
               }}
             >
               <p
@@ -303,10 +300,67 @@ export function ProfileView({ user }: { user: Session["user"] }) {
           )}
         </>
       ) : (
-        <p style={{ fontSize: "14px", color: "var(--color-text-muted)", fontStyle: "italic" }}>
+        <p style={{ fontSize: "14px", color: "var(--color-text-muted)", fontStyle: "italic", marginBottom: "28px" }}>
           Add some books to see your stats.
         </p>
       )}
+
+  
+      <div
+        style={{
+          backgroundColor: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-lg)",
+          padding: "20px",
+          boxShadow: "var(--shadow-xs)",
+        }}
+      >
+        <p
+          style={{
+            fontSize: "11px",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--color-text-muted)",
+            marginBottom: "14px",
+          }}
+        >
+          Account
+        </p>
+        <button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          style={{
+            display:         "flex",
+            alignItems:      "center",
+            justifyContent:  "center",
+            gap:              "8px",
+            width:            "100%",
+            padding:          "12px",
+            borderRadius:     "var(--radius-md)",
+            border:           "1.5px solid var(--color-danger)",
+            backgroundColor:  "transparent",
+            color:            "var(--color-danger)",
+            fontSize:         "14px",
+            fontWeight:       700,
+            fontFamily:       "var(--font-body)",
+            cursor:           "pointer",
+            transition:       "all 150ms ease",
+          }}
+        >
+          <LogoutIcon />
+          Sign out
+        </button>
+      </div>
     </div>
+  );
+}
+
+function LogoutIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
   );
 }

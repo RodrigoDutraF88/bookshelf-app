@@ -1,4 +1,4 @@
-# Data Model (v.1.0.0)
+# Data Model (v.1.0.1)
  
 This document describes the database schema, entity relationships.
 
@@ -19,6 +19,8 @@ Managed by Auth.js. Created automatically on first sign-in.
 | `updatedAt` | DateTime | Auto-updated |
  
 Relations: `accounts[]`, `sessions[]`, `books[]`
+
+> Note: with JWT session strategy (see Authentication doc), this table is present in the schema, required by the Auth.js Adapter interface but is not actively used for session storage. Sessions live entirely in a signed JWT cookie.
  
 ### Account
  

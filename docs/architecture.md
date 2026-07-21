@@ -1,4 +1,4 @@
-# Architecture (v.1.0.1)
+# Architecture (v.1.0.3)
 
 This document covers the overall system design, request flow, folder structure, and the reasoning behind key technical decisions.
 
@@ -33,7 +33,7 @@ Supabase exposes a JavaScript client that can query the database directly from t
 
 NextAuth is purpose-built for the App Router. It handles the session cookie, OAuth provider integrations, and database persistence via the Prisma Adapter, out of the box. The alternative, rolling your own session logic, introduces security surface area we don't need to own.
 
-The Prisma Adapter stores sessions and accounts in the database, so there's no separate session store to manage.
+The Prisma Adapter stores accounts (and users) in the database. Sessions themselves use JWT strategy rather than database storage, see the Authentication doc's "Session Strategy" section for why.
 
 ## The Edge / Node.js Config Split
  
@@ -41,7 +41,7 @@ This is the most important architectural constraint in the auth layer.
  
 ### Why two configs exist
  
-Next.js `middleware.ts` runs in the **Edge Runtime** — a V8 isolate that cannot import Node.js APIs. PrismaClient uses Node.js APIs (`fs`, `net`, `tls`) and will crash if imported in the edge runtime. Auth.js needs to run in middleware to protect pages, so two separate configs are required.
+Both configs must also agree on session strategy. Since only the Node config has the adapter, `session.strategy: "jwt"` is set explicitly there, see the Authentication doc for details on why the edge config must never be given a database-strategy session.
 
 ### Why no RLS?
 
@@ -49,7 +49,10 @@ RLS would be a redundant layer,the tRPC context already scopes every query to th
 
 ## Future Considerations
 
-1. External book APIs (Google Books, Open Library)
-2. Social features: following users, activity feeds will require thinking about public vs private data scopes.
-3. AI features: ex: personalized book recommendations powered by AI.
-4. Barcode Scanner, Add Book by ISBN
+1. Social features: following users, activity feeds will require thinking about public vs private data scopes.
+
+## Delivered Since Last Revision
+
+- External book search via Google Books API (Explore page, Add/Edit modals)
+- ISBN barcode scanning (`@zxing/browser`)
+- AI-powered reading recommendations (Gemini Flash-Lite)

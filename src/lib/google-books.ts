@@ -88,7 +88,9 @@ const params = new URLSearchParams({
       title:         item.volumeInfo.title ?? "",
       author:        (item.volumeInfo.authors ?? []).join(", "),
       coverImage:    extractCover(item),
-      description:   item.volumeInfo.description ?? null,
+      description: item.volumeInfo.description
+        ? item.volumeInfo.description.slice(0, 1800) + (item.volumeInfo.description.length > 1800 ? "…" : "")
+        : null,
       genres:        item.volumeInfo.categories ?? [],
       publishedYear: extractYear(item.volumeInfo.publishedDate),
       isbn:          extractIsbn(item),
