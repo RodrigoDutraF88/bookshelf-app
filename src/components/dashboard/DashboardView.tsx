@@ -125,6 +125,7 @@ export function DashboardView() {
             boxShadow:       "var(--shadow-sm)",
           }}
         >
+          
           <h3
             style={{
               fontFamily:   "var(--font-display)",
@@ -223,6 +224,7 @@ export function DashboardView() {
                         {book.author}
                       </p>
                     </div>
+                    
 
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "3px", flexShrink: 0 }}>
                       {book.rating && (
@@ -237,10 +239,18 @@ export function DashboardView() {
                       </span>
                     </div>
                   </div>
+                  
+                  
                 ))}
+                
           </div>
         </div>
       )}
+      <div id="ai-recommendations">
+        <RecommendationsCard />
+
+      </div>
+      
 
       <div id="ai-recommendations">
         <RecommendationsCard />
