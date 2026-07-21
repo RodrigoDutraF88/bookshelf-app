@@ -1,20 +1,21 @@
+// config.edge.ts
 import { type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 
-/**
- * Edge-safe NextAuth config — used ONLY by middleware.ts (Edge Runtime).
- *
- * Must NEVER import ~/server/db or @auth/prisma-adapter.
- * Adding Google here makes it available for the authorized() check
- * in middleware without pulling in Node.js-only dependencies.
- */
 export const authConfigEdge = {
   providers: [
-    DiscordProvider,
-    GoogleProvider,
+    DiscordProvider({
+      clientId: process.env.AUTH_DISCORD_ID,
+      clientSecret: process.env.AUTH_DISCORD_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
   ],
-  session: { strategy: "database" },
   callbacks: {
     authorized: ({ auth }) => !!auth?.user,
   },
