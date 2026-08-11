@@ -3,6 +3,9 @@ name: CI
 on:
   push:
     branches: ["**"]
+    # Tags starting with v are the only thing that publishes an image; every
+    # other push builds and smoke-tests exactly as before.
+    tags: ["v*"]
   pull_request:
     branches: ["main"]
 
@@ -159,3 +162,53 @@ jobs:
       - name: Tear down
         if: always()
         run: docker compose down -v
+
+  publish:
+    name: Publish image to GHCR
+    runs-on: ubuntu-latest
+    # Only on a v* tag, and only after the smoke test above has passed — an image
+    # that never proved it can serve /login has no business being published.
+    needs: [docker]
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+      packages: write # the default GITHUB_TOKEN is read-only for packages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }} # no PAT needed to push to our own namespace
+
+      - name: Derive image tags from the git tag
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # Written lowercase on purpose: GHCR rejects uppercase in a repository
+          # name, and the GitHub owner is RodrigoDutraF88.
+          images: ghcr.io/rodrigodutraf88/bookshelf-app
+          # No `latest`. The homelab pins every image to an explicit tag, and a
+          # moving tag would make "which build is running?" unanswerable.
+          flavor: latest=false
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Same cache the smoke-test build filled, so this reuses those layers
+          # rather than compiling the app a second time.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
