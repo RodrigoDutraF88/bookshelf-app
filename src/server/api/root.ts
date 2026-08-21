@@ -1,4 +1,3 @@
-// src/server/api/root.ts — add aiRouter
 import { createCallerFactory, createTRPCRouter } from "../api/trpc";
 import { bookRouter }     from "./routers/book";
 import { progressRouter } from "./routers/progress";

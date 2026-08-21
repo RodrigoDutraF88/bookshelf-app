@@ -73,7 +73,6 @@ export function SearchBar({
           border: `1px solid ${isFocused ? "var(--color-accent)" : "var(--color-border)"}`,
           color: "var(--color-text-primary)",
           transition: "border-color var(--transition-fast)",
-          // Remove browser default search input styling
           WebkitAppearance: "none",
         }}
         aria-label="Search your library"

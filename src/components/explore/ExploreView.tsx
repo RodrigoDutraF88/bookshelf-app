@@ -65,7 +65,6 @@ export function ExploreView({ initialQuery = "" }: { initialQuery?: string }) {
 
   return (
     <div style={{ padding: "20px 16px 32px", maxWidth: "760px", margin: "0 auto" }}>
-      {/* Header — matches ReviewsView: plain text, no background */}
       <div style={{ marginBottom: "28px" }}>
         <h1
           style={{
@@ -83,7 +82,6 @@ export function ExploreView({ initialQuery = "" }: { initialQuery?: string }) {
         </p>
       </div>
 
-      {/* Search bar */}
       <div style={{ position: "relative", marginBottom: "28px" }}>
         <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "var(--color-text-muted)", pointerEvents: "none" }}>
           <SearchIcon />

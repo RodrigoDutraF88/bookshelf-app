@@ -68,7 +68,6 @@ const params = new URLSearchParams({
   key:         process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY ?? "",
 });
 
-  // Plain fetch — no Next.js server options, this runs in the browser
   const res = await fetch(
     `https://www.googleapis.com/books/v1/volumes?${params.toString()}`,
   );

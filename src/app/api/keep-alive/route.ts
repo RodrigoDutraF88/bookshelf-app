@@ -2,11 +2,8 @@ import { NextResponse } from "next/server";
 
 import { db } from "~/server/db";
 
-/**
- * Keep-alive endpoint for the Supabase free tier, which pauses a project after
- * 7 days without database activity. Pinging this route runs a real query
- * against Postgres, which counts as activity (unlike a static page hit).
- */
+// Supabase pauses free-tier projects after 7 days without database activity.
+// This runs a real query, which a static page hit would not.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 

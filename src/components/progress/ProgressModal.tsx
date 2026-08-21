@@ -62,7 +62,6 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
 
   const upsertProgress = api.progress.upsert.useMutation();
 
-  // Used when the user hits 100% — marks the book completed
   const updateStatus = api.book.update.useMutation();
 
   const current = parseInt(currentPage, 10) || 0;
@@ -77,13 +76,11 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
 
     const today = new Date().toISOString().split("T")[0]!;
 
-    // Upsert progress first
     await upsertProgress.mutateAsync({
       bookId: book.id,
       currentPage: current,
       totalPages: total > 0 ? total : undefined,
       startedAt: startedAt ? new Date(startedAt) : undefined,
-      // Auto-set finishedAt to today when completing
       finishedAt: isComplete
         ? (finishedAt ? new Date(finishedAt) : new Date(today))
         : finishedAt
@@ -170,7 +167,6 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
                   ? `page ${current}`
                   : "Not started"}
             </span>
-            {/* Completion notice */}
             {isComplete && book.status !== "COMPLETED" && (
               <span
                 style={{
@@ -186,7 +182,6 @@ export function ProgressModal({ book, isOpen, onClose }: ProgressModalProps) {
           </div>
         </div>
 
-        {/* Form */}
         <div className="progress-modal__form">
           <div className="progress-modal__row">
             <div className="progress-modal__field">

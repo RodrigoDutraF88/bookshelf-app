@@ -60,7 +60,6 @@ function getConfig(search?: string, status?: BookStatus | null): EmptyConfig {
     };
   }
 
-  // Default: library is completely empty
   return {
     icon: "◆",
     heading: "Your library is empty",
