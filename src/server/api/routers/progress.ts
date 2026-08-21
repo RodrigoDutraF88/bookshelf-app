@@ -9,7 +9,6 @@ export const progressRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { bookId, ...progressData } = input;
 
-      // now verify if the book belongs to the user
       const book = await ctx.db.book.findUnique({
         where: { id: bookId },
         select: { userId: true },
@@ -29,7 +28,6 @@ export const progressRouter = createTRPCRouter({
         });
       }
 
-      //now prisma handles where to use update or create
       return ctx.db.readingProgress.upsert({
         where: { bookId },
         create: {

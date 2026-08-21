@@ -48,7 +48,6 @@ export function InteractiveStarRating({
             <StarIcon
               filled={active !== null && star <= active}
               size={starSize}
-              // Gold if filled, muted if not
               color={
                 active !== null && star <= active
                   ? "var(--color-accent)"
@@ -59,7 +58,6 @@ export function InteractiveStarRating({
         ))}
       </div>
 
-      {/* Label beneath the stars */}
       <p className="star-rating-interactive__label">
         {active !== null ? LABELS[active] : "Select a rating"}
       </p>

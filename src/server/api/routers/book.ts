@@ -57,20 +57,17 @@ export const bookRouter = createTRPCRouter({
       include: { readingProgress: true, review: true },
     });
 
-    // Status counts
     const total            = books.length;
     const completed        = books.filter(b => b.status === "COMPLETED").length;
     const currentlyReading = books.filter(b => b.status === "CURRENTLY_READING").length;
     const wantToRead       = books.filter(b => b.status === "WANT_TO_READ").length;
     const dropped          = books.filter(b => b.status === "DROPPED").length;
 
-    // Pages read
     const pagesRead = books.reduce(
       (sum, b) => sum + (b.readingProgress?.currentPage ?? 0),
       0,
     );
 
-    // Average rating
     const ratedBooks = books.filter(b => b.review?.rating != null);
     const avgRating  =
       ratedBooks.length > 0

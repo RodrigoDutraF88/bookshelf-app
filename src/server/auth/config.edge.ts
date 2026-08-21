@@ -1,4 +1,3 @@
-// config.edge.ts
 import { type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";

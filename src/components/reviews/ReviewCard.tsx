@@ -62,7 +62,6 @@ export function ReviewCard({ book }: { book: BookWithRelations }) {
           (e.currentTarget.style.boxShadow = "var(--shadow-sm)")
         }
       >
-        {/* Cover thumbnail */}
         <div
           style={{
             width: 56,
@@ -202,7 +201,6 @@ export function ReviewCard({ book }: { book: BookWithRelations }) {
             )}
           </div>
 
-          {/* Review body */}
           {body && (
             <div>
               <p

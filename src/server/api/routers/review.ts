@@ -63,7 +63,6 @@ export const reviewRouter = createTRPCRouter({
         });
       }
 
-      // findUnique returns null if no Review row exists for this bookId.
       return ctx.db.review.findUnique({
         where: { bookId: input.bookId },
       });
@@ -104,7 +103,6 @@ export const reviewRouter = createTRPCRouter({
         });
       }
 
-      // Delete by the review's own primary key, guaranteed unique,
       return ctx.db.review.delete({
         where: { id: review.id },
       });

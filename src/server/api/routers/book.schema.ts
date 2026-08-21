@@ -1,11 +1,6 @@
 import { z } from "zod";
 import { BookStatus } from "../../../../generated/prisma";
 
-//This code is a validation layer. It defines what data is allowed to enter your API before it reaches your database.
-//zod is a TypeScript schema validation library.
-//It allows you to say:
-//"A book must have a title that is a string, an author that is a string, a status that is one of these values..."
-
 export const createBookSchema = z.object({
   title: z.string().min(1, "Title is required").max(200),
   author: z.string().min(1, "Author is required").max(200),

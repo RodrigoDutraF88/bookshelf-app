@@ -194,7 +194,6 @@ export function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps) {
         )}
       </div>
 
-      {/* Error */}
       {state === "error" && (
         <div style={{ backgroundColor: "rgba(184,84,80,0.2)", border: "1px solid rgba(184,84,80,0.5)", borderRadius: "var(--radius-md)", padding: "14px 18px", maxWidth: "360px", width: "100%", textAlign: "center" }}>
           <p style={{ color: "#f87171", fontSize: "14px", lineHeight: 1.5 }}>{errorMsg}</p>

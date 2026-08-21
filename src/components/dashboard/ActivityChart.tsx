@@ -38,7 +38,6 @@ export function ActivityChart({ data, isLoading }: ActivityChartProps) {
         <div style={{ height: "120px", borderRadius: "var(--radius-sm)", backgroundColor: "var(--color-surface-raised)", animation: "pulse 1.5s ease-in-out infinite" }} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {/* Bars */}
           <div
             style={{
               display:     "flex",
