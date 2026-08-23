@@ -20,12 +20,12 @@ const SHELF_BOOKS = [
 
 const SHELF_Y = 110;
 
-type LoadingProvider = "discord" | "google" | null;
+type Provider = "google" | "discord";
 
 export function LoginView() {
-  const [loading, setLoading] = useState<LoadingProvider>(null);
+  const [loading, setLoading] = useState<Provider | null>(null);
 
-  async function handleSignIn(provider: "discord" | "google") {
+  async function handleSignIn(provider: Provider) {
     setLoading(provider);
     await signIn(provider, { callbackUrl: "/library" });
   }
@@ -36,176 +36,122 @@ export function LoginView() {
         minHeight: "100dvh",
         backgroundColor: "var(--color-bg)",
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         padding: "24px",
-        position: "relative",
-        overflow: "hidden",
       }}
     >
-      
-      <div aria-hidden="true" style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(200,135,58,0.08) 0%, transparent 70%)", top: "-100px", left: "-150px", pointerEvents: "none" }} />
-      <div aria-hidden="true" style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(74,124,89,0.07) 0%, transparent 70%)", bottom: "-80px", right: "-100px", pointerEvents: "none" }} />
-
-      <div style={{ width: "100%", maxWidth: "400px", position: "relative", zIndex: 1 }}>
-
-        
-        <div style={{ width: "100%", marginBottom: "32px", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "100%", maxWidth: "380px" }}>
+        <div style={{ marginBottom: "28px", display: "flex", justifyContent: "center" }}>
           <AnimatedShelf />
         </div>
 
-       
         <div
           style={{
-            backgroundColor: "rgba(251, 248, 243, 0.88)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid rgba(139, 99, 64, 0.18)",
-            borderRadius: "var(--radius-xl)",
-            boxShadow: "0 24px 64px rgba(44, 24, 16, 0.14), 0 4px 16px rgba(44, 24, 16, 0.08)",
-            overflow: "hidden",
+            backgroundColor: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "var(--radius-lg)",
+            boxShadow: "var(--shadow-lg)",
+            padding: "32px",
           }}
         >
-          
-          <div style={{ height: "3px", background: "linear-gradient(to right, #4A7C59, #C8873A, #6B8FA8, #B85450, #8B6B8A, #4A7C59)" }} />
-
-          <div style={{ padding: "36px 32px 32px" }}>
-           
-            <div style={{ textAlign: "center", marginBottom: "28px" }}>
-              <h1 style={{ fontFamily: "var(--font-display)", fontSize: "30px", color: "var(--color-text-primary)", lineHeight: 1.1, marginBottom: "10px", letterSpacing: "-0.01em" }}>
-                Bookshelf
-              </h1>
-              <p style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "15px", color: "var(--color-text-muted)", lineHeight: 1.5 }}>
-                Your reading life, beautifully organised.
-              </p>
-            </div>
-
-            
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-              <div style={{ flex: 1, height: "1px", backgroundColor: "var(--color-border)" }} />
-              <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
-                Sign in with
-              </span>
-              <div style={{ flex: 1, height: "1px", backgroundColor: "var(--color-border)" }} />
-            </div>
-
-           
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-
-              
-              <button
-                onClick={() => { void handleSignIn("google"); }}
-                disabled={loading !== null}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "10px",
-                  padding: "14px 24px",
-                  borderRadius: "var(--radius-pill)",
-                  border: "1.5px solid rgba(139,99,64,0.2)",
-                  backgroundColor: "#fff",
-                  color: "#3c4043",
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  fontFamily: "var(--font-body)",
-                  cursor: loading !== null ? "not-allowed" : "pointer",
-                  opacity: loading !== null ? 0.7 : 1,
-                  transition: "all 200ms ease",
-                  boxShadow: "0 2px 8px rgba(44,24,16,0.10)",
-                }}
-                onMouseEnter={(e) => {
-                  if (!loading) {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 6px 20px rgba(44,24,16,0.16)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 2px 8px rgba(44,24,16,0.10)";
-                }}
-              >
-                {loading === "google" ? <SpinnerIcon color="#4285F4" /> : <GoogleIcon />}
-                {loading === "google" ? "Connecting…" : "Continue with Google"}
-              </button>
-
-             
-              <button
-                onClick={() => { void handleSignIn("discord"); }}
-                disabled={loading !== null}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "10px",
-                  padding: "14px 24px",
-                  borderRadius: "var(--radius-pill)",
-                  border: "none",
-                  backgroundColor: "#5865F2",
-                  color: "#FFFFFF",
-                  fontSize: "15px",
-                  fontWeight: 700,
-                  fontFamily: "var(--font-body)",
-                  cursor: loading !== null ? "not-allowed" : "pointer",
-                  opacity: loading !== null ? 0.7 : 1,
-                  transition: "all 200ms ease",
-                  boxShadow: "0 4px 16px rgba(88, 101, 242, 0.30)",
-                  letterSpacing: "-0.01em",
-                }}
-                onMouseEnter={(e) => {
-                  if (!loading) {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(88, 101, 242, 0.40)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(88, 101, 242, 0.30)";
-                }}
-              >
-                {loading === "discord" ? <SpinnerIcon color="#fff" /> : <DiscordIcon />}
-                {loading === "discord" ? "Connecting…" : "Continue with Discord"}
-              </button>
-            </div>
-
-            <p style={{ fontSize: "11px", color: "var(--color-text-muted)", textAlign: "center", marginTop: "16px", lineHeight: 1.6 }}>
-              No account needed — sign in once and your shelf is ready.
+          <div style={{ textAlign: "center", marginBottom: "24px" }}>
+            <h1
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "28px",
+                letterSpacing: "-0.02em",
+                color: "var(--color-text-primary)",
+                marginBottom: "6px",
+              }}
+            >
+              Bookshelf
+            </h1>
+            <p style={{ fontSize: "14px", color: "var(--color-text-muted)", fontFamily: "var(--font-body)" }}>
+              Keep track of what you read
             </p>
           </div>
 
-         
-          <div style={{ padding: "18px 32px 24px", borderTop: "1px solid var(--color-border)", backgroundColor: "rgba(237, 228, 216, 0.60)", display: "flex", flexDirection: "column", gap: "10px" }}>
-            {[
-              ["📚", "Track every book you read"],
-              ["⭐", "Rate and write personal reviews"],
-              ["📊", "See your reading stats grow"],
-            ].map(([icon, text]) => (
-              <div key={text} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "15px", flexShrink: 0 }}>{icon}</span>
-                <span style={{ fontSize: "13px", color: "var(--color-text-secondary)", fontFamily: "var(--font-body)" }}>{text}</span>
-              </div>
-            ))}
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <ProviderButton
+              provider="google"
+              label="Continue with Google"
+              icon={<GoogleIcon />}
+              spinnerColor="#4285F4"
+              loading={loading}
+              onSignIn={handleSignIn}
+              style={{
+                backgroundColor: "var(--color-surface-raised)",
+                color: "#3C4043",
+                border: "1px solid var(--color-border-hover)",
+              }}
+            />
+            <ProviderButton
+              provider="discord"
+              label="Continue with Discord"
+              icon={<DiscordIcon />}
+              spinnerColor="#FFFFFF"
+              loading={loading}
+              onSignIn={handleSignIn}
+              style={{
+                backgroundColor: "#5865F2",
+                color: "#FFFFFF",
+                border: "1px solid transparent",
+              }}
+            />
           </div>
         </div>
-
-        <p style={{ textAlign: "center", fontSize: "11px", color: "var(--color-text-muted)", marginTop: "20px" }}>
-          Built for readers who care about their shelves 📖
-        </p>
       </div>
-
-      <style>{`
-        @keyframes bob {
-          0%, 100% { transform: translateY(0px); }
-          50%       { transform: translateY(-5px); }
-        }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
+  );
+}
+
+function ProviderButton({
+  provider,
+  label,
+  icon,
+  spinnerColor,
+  loading,
+  onSignIn,
+  style,
+}: {
+  provider: Provider;
+  label: string;
+  icon: React.ReactNode;
+  spinnerColor: string;
+  loading: Provider | null;
+  onSignIn: (provider: Provider) => Promise<void>;
+  style: React.CSSProperties;
+}) {
+  const isBusy = loading !== null;
+
+  return (
+    <button
+      type="button"
+      onClick={() => { void onSignIn(provider); }}
+      disabled={isBusy}
+      style={{
+        ...style,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        width: "100%",
+        padding: "13px 24px",
+        borderRadius: "var(--radius-pill)",
+        fontFamily: "var(--font-body)",
+        fontSize: "15px",
+        fontWeight: 600,
+        cursor: isBusy ? "default" : "pointer",
+        opacity: isBusy ? 0.6 : 1,
+        transition: "opacity var(--transition-fast)",
+      }}
+      onMouseEnter={(e) => { if (!isBusy) e.currentTarget.style.opacity = "0.85"; }}
+      onMouseLeave={(e) => { if (!isBusy) e.currentTarget.style.opacity = "1"; }}
+    >
+      {loading === provider ? <SpinnerIcon color={spinnerColor} /> : icon}
+      {loading === provider ? "Signing in…" : label}
+    </button>
   );
 }
 

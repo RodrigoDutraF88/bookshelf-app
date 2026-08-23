@@ -427,10 +427,6 @@ export function AddBookModal({ isOpen, onClose }: Props) {
               </div>
             </form>
           )}
-
-          <style>{`
-            @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-          `}</style>
         </div>
       </div>
     </>

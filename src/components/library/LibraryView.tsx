@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { BookStatus } from "../../../generated/prisma";
 import { api } from "~/trpc/react";
 import { SearchBar } from "./SearchBar";
 import { EmptyState } from "./EmptyState";
 import { AddBookModal } from "./AddBookModal";
 import { BookshelfView } from "./BookshelfView";
-import { useEffect } from "react";
 
 type OrganiseMode = "all" | "category";
 

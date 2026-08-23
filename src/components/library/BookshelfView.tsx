@@ -76,7 +76,7 @@ export function BookshelfView({ books, onAddBook, organise, booksPerShelf = 22 }
   
       {organise === "all" && (
         viewMode === "shelf" ? (
-          <ShelfScene books={books} withPlants booksPerShelf={booksPerShelf} />
+          <ShelfScene books={books} booksPerShelf={booksPerShelf} />
         ) : (
           <div className="bookshelf-view__grid">
             {books.map((book) => <BookCard key={book.id} book={book} />)}
@@ -121,9 +121,8 @@ export function BookshelfView({ books, onAddBook, organise, booksPerShelf = 22 }
 }
 
 
-function ShelfScene({ books, withPlants = false, booksPerShelf = 22 }: {
+function ShelfScene({ books, booksPerShelf = 22 }: {
   books: BookWithRelations[];
-  withPlants?: boolean;
   booksPerShelf?: number;
 }) {
   const shelves: BookWithRelations[][] = [];

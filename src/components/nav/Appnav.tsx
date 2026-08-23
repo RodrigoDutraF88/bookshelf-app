@@ -346,13 +346,6 @@ export function AppNav({ user }: AppNavProps) {
           </div>
         </div>
       </header>
-
-      <style>{`
-        @keyframes fade-down {
-          from { opacity: 0; transform: translateY(-6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </>
   );
 }

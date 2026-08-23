@@ -242,26 +242,17 @@ export function DashboardView() {
                   
                   
                 ))}
-                
           </div>
         </div>
       )}
       <div id="ai-recommendations">
         <RecommendationsCard />
-
       </div>
       
 
       <div id="ai-recommendations">
         <RecommendationsCard />
       </div>
-
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0.4; }
-        }
-      `}</style>
     </div>
   );
 }
