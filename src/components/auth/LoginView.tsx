@@ -4,18 +4,18 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 
 const SHELF_BOOKS = [
-  { x: 6,   w: 22, h: 88,  color: "#4A7C59", delay: 0 },
-  { x: 30,  w: 16, h: 104, color: "#C8873A", delay: 0.3 },
-  { x: 48,  w: 24, h: 76,  color: "#6B8FA8", delay: 0.6 },
-  { x: 74,  w: 18, h: 96,  color: "#B85450", delay: 0.2 },
-  { x: 94,  w: 20, h: 84,  color: "#8B6B8A", delay: 0.8 },
-  { x: 116, w: 14, h: 100, color: "#5B7A8C", delay: 0.4 },
-  { x: 132, w: 26, h: 80,  color: "#7A8C5B", delay: 1.0 },
-  { x: 160, w: 18, h: 92,  color: "#8C6B3E", delay: 0.15 },
-  { x: 180, w: 20, h: 72,  color: "#4A5E7A", delay: 0.7 },
-  { x: 202, w: 16, h: 98,  color: "#7A4A4A", delay: 0.45 },
-  { x: 220, w: 22, h: 86,  color: "#4A7C59", delay: 0.9 },
-  { x: 244, w: 18, h: 94,  color: "#C8873A", delay: 0.25 },
+  { x: 6,   w: 22, h: 88,  color: "#4A7C59" },
+  { x: 30,  w: 16, h: 104, color: "#C8873A" },
+  { x: 48,  w: 24, h: 76,  color: "#6B8FA8" },
+  { x: 74,  w: 18, h: 96,  color: "#B85450" },
+  { x: 94,  w: 20, h: 84,  color: "#8B6B8A" },
+  { x: 116, w: 14, h: 100, color: "#5B7A8C" },
+  { x: 132, w: 26, h: 80,  color: "#7A8C5B" },
+  { x: 160, w: 18, h: 92,  color: "#8C6B3E" },
+  { x: 180, w: 20, h: 72,  color: "#4A5E7A" },
+  { x: 202, w: 16, h: 98,  color: "#7A4A4A" },
+  { x: 220, w: 22, h: 86,  color: "#4A7C59" },
+  { x: 244, w: 18, h: 94,  color: "#C8873A" },
 ];
 
 const SHELF_Y = 110;
@@ -164,13 +164,11 @@ function AnimatedShelf() {
         const bookTop = SHELF_Y - book.h;
         const tilt = i % 4 === 1 ? -1.5 : i % 4 === 3 ? 1.2 : 0;
         return (
-          <g key={i} style={{ transformOrigin: `${book.x + book.w / 2}px ${SHELF_Y}px`, animation: `bob ${2.4 + (i % 4) * 0.3}s ease-in-out ${book.delay}s infinite` }}>
-            <g transform={`rotate(${tilt}, ${book.x + book.w / 2}, ${SHELF_Y})`}>
-              <rect x={book.x} y={bookTop} width={book.w} height={book.h} rx="2" fill={book.color} />
-              <rect x={book.x} y={bookTop} width={3} height={book.h} rx="1" fill="rgba(255,255,255,0.22)" />
-              <rect x={book.x} y={bookTop} width={book.w} height={3} rx="1" fill="rgba(255,255,255,0.30)" />
-              <rect x={book.x + book.w - 4} y={bookTop} width={4} height={book.h} rx="1" fill="rgba(0,0,0,0.12)" />
-            </g>
+          <g key={i} transform={`rotate(${tilt}, ${book.x + book.w / 2}, ${SHELF_Y})`}>
+            <rect x={book.x} y={bookTop} width={book.w} height={book.h} rx="2" fill={book.color} />
+            <rect x={book.x} y={bookTop} width={3} height={book.h} rx="1" fill="rgba(255,255,255,0.22)" />
+            <rect x={book.x} y={bookTop} width={book.w} height={3} rx="1" fill="rgba(255,255,255,0.30)" />
+            <rect x={book.x + book.w - 4} y={bookTop} width={4} height={book.h} rx="1" fill="rgba(0,0,0,0.12)" />
           </g>
         );
       })}
