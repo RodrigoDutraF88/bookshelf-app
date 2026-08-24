@@ -60,6 +60,7 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    isDemo        Boolean   @default(false)
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
 
@@ -67,6 +68,8 @@ model User {
     accounts Account[]
     sessions Session[]
     books    Book[]
+
+    @@index([isDemo, createdAt])
 }
 
 model Book {

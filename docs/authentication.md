@@ -9,7 +9,7 @@ This document explains how authentication works, which libraries are involved an
 | Auth framework | Auth.js (NextAuth v5 Beta) |
 | Session storage | JWT (signed cookie) |
 | Adapter | Prisma Adapter, persists User/Account only, not sessions |
-| Providers | OAuth (Discord + Google), allowDangerousEmailAccountLinking: true |
+| Providers | OAuth (Discord + Google), allowDangerousEmailAccountLinking: true, plus a credential-less demo provider |
 | Session access in API | tRPC context (ctx.session) |
 | Route protection | Middleware + protectedProcedure |
  
@@ -51,4 +51,33 @@ middleware.ts intercepts GET /
         ↓
 Page renders, tRPC calls succeed via protectedProcedure
 ```
- 
+
+## Demo access
+
+The login page offers "Browse a demo library" so the deployed app can be tried
+without an OAuth account. It is a Credentials provider registered under the id
+`demo`, and it works precisely because sessions are JWT — the Credentials
+provider is incompatible with the database strategy.
+
+`authorize` takes no credentials and reads none. Every call mints a brand new
+throwaway `User` with `isDemo: true`, preloaded with a sample library (books,
+reading progress, reviews, finish dates spread over the past year so the
+dashboard charts have something to plot). There is no shared demo password and
+no fixed demo account, so there is nothing to guess and one visitor cannot
+disturb another's data.
+
+It lives in `config.ts` rather than `config.edge.ts` because seeding needs
+Prisma, which cannot run in the middleware's edge runtime. This does not stop
+middleware from accepting demo sessions: the edge config only verifies the JWT
+signature, and verification does not require the issuing provider to be
+registered.
+
+Demo accounts are disposable. Each demo sign-in first deletes any demo account
+older than 24 hours; the `Book`, `ReadingProgress` and `Review` rows follow
+through the cascade on `User`. Accounts where `isDemo` is false are never
+touched by that sweep.
+
+`isDemo` travels in the JWT and is exposed as `session.user.isDemo`, which lets
+`protectedProcedure` resolvers gate on it without a database round trip. The
+only feature currently gated is `ai.getRecommendations`, which returns
+`FORBIDDEN` for demo accounts so that a public page cannot spend Gemini quota.

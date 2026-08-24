@@ -20,7 +20,7 @@ const SHELF_BOOKS = [
 
 const SHELF_Y = 110;
 
-type Provider = "google" | "discord";
+type Provider = "google" | "discord" | "demo";
 
 export function LoginView() {
   const [loading, setLoading] = useState<Provider | null>(null);
@@ -99,6 +99,35 @@ export function LoginView() {
                 border: "1px solid transparent",
               }}
             />
+          </div>
+
+          <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--color-border)" }}>
+            <button
+              type="button"
+              onClick={() => { void handleSignIn("demo"); }}
+              disabled={loading !== null}
+              style={{
+                width: "100%",
+                padding: "11px 24px",
+                borderRadius: "var(--radius-pill)",
+                border: "1px solid var(--color-border-hover)",
+                backgroundColor: "transparent",
+                color: "var(--color-text-secondary)",
+                fontFamily: "var(--font-body)",
+                fontSize: "14px",
+                fontWeight: 500,
+                cursor: loading !== null ? "default" : "pointer",
+                opacity: loading !== null ? 0.6 : 1,
+                transition: "opacity var(--transition-fast)",
+              }}
+              onMouseEnter={(e) => { if (!loading) e.currentTarget.style.opacity = "0.7"; }}
+              onMouseLeave={(e) => { if (!loading) e.currentTarget.style.opacity = "1"; }}
+            >
+              {loading === "demo" ? "Setting up…" : "Browse a demo library"}
+            </button>
+            <p style={{ fontSize: "12px", color: "var(--color-text-muted)", textAlign: "center", marginTop: "8px", lineHeight: 1.5 }}>
+              No sign-up. You get your own sample shelf, cleared after a day.
+            </p>
           </div>
         </div>
       </div>

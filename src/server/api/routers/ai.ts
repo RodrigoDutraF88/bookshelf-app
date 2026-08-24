@@ -4,6 +4,13 @@ import { getBookRecommendations } from "~/lib/gemini";
 
 export const aiRouter = createTRPCRouter({
   getRecommendations: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.session.user.isDemo) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "AI recommendations are turned off on the demo account.",
+      });
+    }
+
     const userId = ctx.session.user.id;
 
     

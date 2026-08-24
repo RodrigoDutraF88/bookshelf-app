@@ -36,6 +36,7 @@ export function RecommendationsCard() {
   }
 
   const preconditionFailed = isError && error?.data?.code === "PRECONDITION_FAILED";
+  const disabledOnDemo = isError && error?.data?.code === "FORBIDDEN";
 
   return (
     <div
@@ -123,7 +124,15 @@ export function RecommendationsCard() {
       )}
 
       
-      {isError && !preconditionFailed && (
+      {disabledOnDemo && (
+        <div style={{ padding: "16px", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-bg-deep)", border: "1px solid var(--color-border)", textAlign: "center" }}>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", lineHeight: 1.6 }}>
+            AI recommendations are turned off on the demo account. Sign in with your own account to try them.
+          </p>
+        </div>
+      )}
+
+      {isError && !preconditionFailed && !disabledOnDemo && (
         <div style={{ padding: "12px 16px", borderRadius: "var(--radius-md)", backgroundColor: "color-mix(in srgb, var(--color-danger) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--color-danger) 25%, transparent)" }}>
           <p style={{ fontSize: "13px", color: "var(--color-danger)" }}>
             {error?.message ?? "Something went wrong. Try again."}
