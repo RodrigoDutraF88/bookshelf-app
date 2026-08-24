@@ -197,17 +197,19 @@ export function LibraryView() {
       </div>
 
 
-<div style={{
-  position:        "fixed",
-  bottom:          "72px",
-  left:            "50%",
-  transform:       "translateX(-50%)",
-  zIndex:          30,
-  textAlign:       "center",
-  display:         "flex",
-  flexDirection:   "column",
-  alignItems:      "center",
-}}>
+      {/* Hidden while the shelf is empty: EmptyState already offers the same action there. */}
+      {books && books.length > 0 && (
+      <div style={{
+        position:        "fixed",
+        bottom:          "72px",
+        left:            "50%",
+        transform:       "translateX(-50%)",
+        zIndex:          30,
+        textAlign:       "center",
+        display:         "flex",
+        flexDirection:   "column",
+        alignItems:      "center",
+      }}>
         <button
           onClick={() => setIsAddModalOpen(true)}
           aria-label="Add a book"
@@ -228,6 +230,7 @@ export function LibraryView() {
           ADD BOOK
         </p>
       </div>
+      )}
 
       <AddBookModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
     </>

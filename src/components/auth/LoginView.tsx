@@ -123,10 +123,10 @@ export function LoginView() {
               onMouseEnter={(e) => { if (!loading) e.currentTarget.style.opacity = "0.7"; }}
               onMouseLeave={(e) => { if (!loading) e.currentTarget.style.opacity = "1"; }}
             >
-              {loading === "demo" ? "Setting up…" : "Browse a demo library"}
+              {loading === "demo" ? "Setting up…" : "Try it without signing up"}
             </button>
             <p style={{ fontSize: "12px", color: "var(--color-text-muted)", textAlign: "center", marginTop: "8px", lineHeight: 1.5 }}>
-              No sign-up. You get your own sample shelf, cleared after a day.
+              No sign-up. You get an empty shelf to fill, cleared after a day.
             </p>
           </div>
         </div>
