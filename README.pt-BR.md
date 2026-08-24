@@ -9,6 +9,8 @@
 
 **[🔗 Demo ao Vivo](https://bookshelf-app-pearl-theta.vercel.app)** &nbsp;·&nbsp; **[🐳 Rodar com Docker](#rodar-com-docker)**
 
+Não precisa de conta para dar uma olhada: escolha *Try it without signing up* na tela de login.
+
 [🇬🇧 English](README.md) &nbsp;·&nbsp; 🇧🇷 Português &nbsp;·&nbsp; [🇮🇹 Italiano](README.it.md)
 
 ---
