@@ -248,11 +248,6 @@ export function DashboardView() {
       <div id="ai-recommendations">
         <RecommendationsCard />
       </div>
-      
-
-      <div id="ai-recommendations">
-        <RecommendationsCard />
-      </div>
     </div>
   );
 }
