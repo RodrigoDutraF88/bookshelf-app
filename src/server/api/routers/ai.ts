@@ -37,10 +37,13 @@ export const aiRouter = createTRPCRouter({
     try {
       return await getBookRecommendations(input);
     } catch (err) {
-      
+      // The upstream message can name the model, the API key or the database
+      // host, so it stays in the server log and the client gets none of it.
+      console.error("[ai.getRecommendations] failed", err);
+
       throw new TRPCError({
         code:    "INTERNAL_SERVER_ERROR",
-        message: err instanceof Error ? err.message : "Failed to get recommendations",
+        message: "Could not generate recommendations right now. Please try again.",
       });
     }
   }),

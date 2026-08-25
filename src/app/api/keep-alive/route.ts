@@ -9,12 +9,14 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const books = await db.book.count();
+    await db.book.count();
 
-    return NextResponse.json({ ok: true, books });
+    return NextResponse.json({ ok: true });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
+    // Only ever logged, never returned: driver errors carry the database host
+    // and port, and this route is public.
+    console.error("[keep-alive] database ping failed", error);
 
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    return NextResponse.json({ ok: false }, { status: 500 });
   }
 }
